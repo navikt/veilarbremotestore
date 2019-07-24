@@ -20,22 +20,25 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 
 
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
-    route("/{id}") {
-        get {
-            call.parameters["id"]
-                    ?.let {
-                        val veileder = provider.hentVeilederObjekt(it)
-                        if(veileder != null)
-                            call.respond(veileder)
-                        else{
-                            call.respond(HttpStatusCode.NoContent)
-                        }
-                    }
-                    ?: call.respond(HttpStatusCode.BadRequest)
-        }
+    route("/{ident}") {
         conditionalAuthenticate(useAuthentication) {
+            get ("/{key}"){
+
+            }
+            get {
+                call.parameters["ident"]
+                        ?.let {
+                            val veileder = provider.hentVeilederObjekt(it)
+                            if(veileder != null)
+                                call.respond(veileder)
+                            else{
+                                call.respond(HttpStatusCode.NoContent)
+                            }
+                        }
+                        ?: call.respond(HttpStatusCode.BadRequest)
+            }
             put {
-                call.parameters["id"]
+                call.parameters["ident"]
                         ?.let {
                             call.respond(provider.oppdaterVeilederObjekt(call.receive(),it))
                         }
@@ -43,8 +46,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             }
 
             post {
-
-                call.parameters["id"]
+                call.parameters["ident"]
                         ?.let {
                             call.respond(provider.leggTilVeilederObjekt(call.receive(),it))
                         }
@@ -52,7 +54,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             }
 
             delete {
-                call.parameters["id"]
+                call.parameters["ident"]
                         ?.let {
                             provider.slettVeilederObjekt(it)
                             call.respond(HttpStatusCode.OK, "Deleted $it")
