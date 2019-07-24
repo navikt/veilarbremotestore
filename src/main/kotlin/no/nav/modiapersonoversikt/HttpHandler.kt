@@ -22,7 +22,7 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.dropwizard.DropwizardExports
 import no.nav.modiapersonoversikt.ObjectMapperProvider.Companion.objectMapper
 import no.nav.modiapersonoversikt.routes.naisRoutes
-import no.nav.modiapersonoversikt.routes.skrivestotteRoutes
+import no.nav.modiapersonoversikt.routes.veilarbstoreRoutes
 import no.nav.modiapersonoversikt.storage.StorageProvider
 import org.slf4j.event.Level
 import no.nav.modiapersonoversikt.JwtUtil.Companion as JwtUtil
@@ -78,7 +78,7 @@ fun createHttpServer(applicationState: ApplicationState,
             }
 
             naisRoutes(readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
-            skrivestotteRoutes(provider, useAuthentication)
+            veilarbstoreRoutes(provider, useAuthentication)
         }
     }
 

@@ -20,11 +20,11 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 }
 
 
-fun Route.skrivestotteRoutes(provider: StorageProvider, useAuthentication: Boolean) {
+fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
 
-    route("/skrivestotte") {
+    route("/veilarbstore") {
         get {
-            call.respond(provider.hentVeilederObjekt())
+            call.respond(provider.hentVeildere())
         }
 
         conditionalAuthenticate(useAuthentication) {
@@ -39,7 +39,7 @@ fun Route.skrivestotteRoutes(provider: StorageProvider, useAuthentication: Boole
             delete("/{id}") {
                 call.parameters["id"]
                         ?.let {
-                            provider.slettVeilederObjekt(UUID.fromString(it))
+                            provider.slettVeilederObjekt(it)
                             call.respond(HttpStatusCode.OK, "Deleted $it")
                         }
                         ?: call.respond(HttpStatusCode.BadRequest)
