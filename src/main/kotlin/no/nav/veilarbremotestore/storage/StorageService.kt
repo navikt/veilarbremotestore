@@ -8,11 +8,9 @@ import io.ktor.features.BadRequestException
 import no.nav.veilarbremotestore.Metrics.Companion.timed
 import no.nav.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.veilarbremotestore.model.VeilederObjekt
-import no.nav.veilarbremotestore.model.Veiledere
 import org.slf4j.LoggerFactory
 
 private const val VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
-private const val VEILEDERREMOTESTORE_KEY_NAME = "veilarbremotestore"
 private val log = LoggerFactory.getLogger("veilarbremotestore.StorageService")
 
 class StorageService(private val s3: AmazonS3) : StorageProvider {
@@ -20,43 +18,35 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
         lagS3BucketsHvisNodvendig(VEILEDERREMOTESTORE_BUCKET_NAME)
     }
 
-    override fun hentVeildere(): Veiledere =
-        timed("hent_VeilederObjekt") {
+
+
+
+    override fun hentVeilederObjekt(veilederId: String): VeilederObjekt {
+        val res = timed("hent_VeilederObjekt") {
             try {
-                val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, VEILEDERREMOTESTORE_KEY_NAME)
-                objectMapper.readValue(remoteStore.objectContent)
+                val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, veilederId)
+                objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
-                emptyMap()
+                null
             }
         }
 
-    override fun hentVeilederObjekt(veilederId: String): VeilederObjekt {
-        val res = hentVeildere()[veilederId]
+        return VeilederObjekt(emptyMap())
+    }
 
-        if (res != null) {
-            return res
+    override fun oppdaterVeilederObjekt(veileder: VeilederObjekt, id: String): VeilederObjekt {
+        if (hentVeilederObjekt(id) != null) {
+            lagreVeiledere(veileder, id)
+        } else {
+            throw BadRequestException("Fant ikke veileder med id: ${id}")
         }
-
-        return VeilederObjekt(emptyMap(), "-1")
-    }
-
-    override fun oppdaterVeilederObjekt(veileder: VeilederObjekt): VeilederObjekt {
-        val oppdatertVeilederStorage = veileder.id
-                ?.let {
-                    hentVeildere().plus(it to veileder)
-                }
-                ?: throw BadRequestException("id må være definert")
-
-        lagreVeiledere(oppdatertVeilederStorage)
-
-        return oppdatertVeilederStorage[veileder.id] ?: error("Fant ikke veileder med id: ${ veileder.id}")
+        return veileder
     }
 
 
-    override fun leggTilVeilederObjekt(veilederObjekt: VeilederObjekt): VeilederObjekt {
-        if (!hentVeildere().containsKey(veilederObjekt.id)) {
-            val nyeVeildere = hentVeildere().plus(veilederObjekt.id to veilederObjekt)
-            lagreVeiledere(nyeVeildere)
+    override fun leggTilVeilederObjekt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
+        if (hentVeilederObjekt(id) == null) {
+            lagreVeiledere(veilederObjekt, id)
         } else {
             throw BadRequestException("Finnes allerede data på veilederen")
         }
@@ -64,13 +54,12 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
     }
 
     override fun slettVeilederObjekt(id: String) {
-        val nyeVeildere = hentVeildere().minus(id)
-        lagreVeiledere(nyeVeildere)
+        s3.deleteBucket(id);
     }
 
-    private fun lagreVeiledere(veileder: Veiledere) {
+    private fun lagreVeiledere(veileder: VeilederObjekt, id: String) {
         timed("lagre_veiledere") {
-            s3.putObject(VEILEDERREMOTESTORE_BUCKET_NAME, VEILEDERREMOTESTORE_KEY_NAME, objectMapper.writeValueAsString(veileder))
+            s3.putObject(VEILEDERREMOTESTORE_BUCKET_NAME, id, objectMapper.writeValueAsString(veileder))
         }
     }
 

@@ -49,7 +49,7 @@ fun createHttpServer(applicationState: ApplicationState,
         install(Authentication) {
             jwt {
                 authHeader(JwtUtil::useJwtFromCookie)
-                realm = "veilarbremotestore-skrivestøtte"
+                realm = "veilarbremotestore"
                 verifier(configuration.jwksUrl, configuration.jwtIssuer)
                 validate { JwtUtil.validateJWT(it) }
             }

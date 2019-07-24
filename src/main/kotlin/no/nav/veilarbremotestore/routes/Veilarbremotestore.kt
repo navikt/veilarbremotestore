@@ -20,11 +20,7 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 
 
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
-
-    route("/veilarbstore") {
-        get {
-            call.respond(provider.hentVeildere())
-        }
+    route("/") {
         get ("/{id}"){
             call.parameters["id"]
                     ?.let {
@@ -33,12 +29,22 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                     ?: call.respond(HttpStatusCode.BadRequest)
         }
         conditionalAuthenticate(useAuthentication) {
-            put {
-                call.respond(provider.oppdaterVeilederObjekt(call.receive()))
+            put("/{id}") {
+                call.parameters["id"]
+                        ?.let {
+                            call.respond(provider.oppdaterVeilederObjekt(call.receive(),it))
+                        }
+                        ?: call.respond(HttpStatusCode.BadRequest)
             }
 
-            post {
-                call.respond(provider.leggTilVeilederObjekt(call.receive()))
+            post("/{id}") {
+
+                call.parameters["id"]
+                        ?.let {
+                            println(it)
+                            call.respond(provider.leggTilVeilederObjekt(call.receive(),it))
+                        }
+                        ?: call.respond(HttpStatusCode.BadRequest)
             }
 
             delete("/{id}") {
@@ -52,3 +58,4 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
         }
     }
 }
+
