@@ -7,11 +7,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.features.BadRequestException
 import no.nav.modiapersonoversikt.Metrics.Companion.timed
 import no.nav.modiapersonoversikt.ObjectMapperProvider.Companion.objectMapper
-import no.nav.modiapersonoversikt.XmlLoader
 import no.nav.modiapersonoversikt.model.VeilederObjekt
 import no.nav.modiapersonoversikt.model.Veiledere
 import org.slf4j.LoggerFactory
-import java.util.*
 
 private const val VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
 private const val VEILEDERREMOTESTORE_KEY_NAME = "veilarbremotestore"
