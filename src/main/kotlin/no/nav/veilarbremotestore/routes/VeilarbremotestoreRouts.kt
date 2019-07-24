@@ -24,7 +24,12 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
         get ("/{id}"){
             call.parameters["id"]
                     ?.let {
-                        call.respond(provider.hentVeilederObjekt(it))
+                        val veileder = provider.hentVeilederObjekt(it)
+                        if(veileder != null)
+                            call.respond(veileder)
+                        else{
+                            call.respond(HttpStatusCode.Forbidden)
+                        }
                     }
                     ?: call.respond(HttpStatusCode.BadRequest)
         }
@@ -41,7 +46,6 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 
                 call.parameters["id"]
                         ?.let {
-                            println(it)
                             call.respond(provider.leggTilVeilederObjekt(call.receive(),it))
                         }
                         ?: call.respond(HttpStatusCode.BadRequest)

@@ -21,21 +21,21 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
 
 
 
-    override fun hentVeilederObjekt(veilederId: String): VeilederObjekt {
+    override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, veilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
-                null
+                 null
             }
         }
 
-        return VeilederObjekt(emptyMap())
+        return res
     }
 
     override fun oppdaterVeilederObjekt(veileder: VeilederObjekt, id: String): VeilederObjekt {
-        if (hentVeilederObjekt(id) != null) {
+        if (hentVeilederObjekt(id) != null ) {
             lagreVeiledere(veileder, id)
         } else {
             throw BadRequestException("Fant ikke veileder med id: ${id}")
