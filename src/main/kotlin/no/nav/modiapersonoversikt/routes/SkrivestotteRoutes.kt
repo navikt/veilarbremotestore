@@ -24,22 +24,22 @@ fun Route.skrivestotteRoutes(provider: StorageProvider, useAuthentication: Boole
 
     route("/skrivestotte") {
         get {
-            call.respond(provider.hentTekster())
+            call.respond(provider.hentVeilederObjekt())
         }
 
         conditionalAuthenticate(useAuthentication) {
             put {
-                call.respond(provider.oppdaterTekst(call.receive()))
+                call.respond(provider.oppdaterVeilederObjekt(call.receive()))
             }
 
             post {
-                call.respond(provider.leggTilTekst(call.receive()))
+                call.respond(provider.leggTilVeilederObjekt(call.receive()))
             }
 
             delete("/{id}") {
                 call.parameters["id"]
                         ?.let {
-                            provider.slettTekst(UUID.fromString(it))
+                            provider.slettVeilederObjekt(UUID.fromString(it))
                             call.respond(HttpStatusCode.OK, "Deleted $it")
                         }
                         ?: call.respond(HttpStatusCode.BadRequest)
