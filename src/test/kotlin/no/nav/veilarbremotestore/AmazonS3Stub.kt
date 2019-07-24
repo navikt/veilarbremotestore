@@ -37,5 +37,8 @@ fun createS3Stub(): AmazonS3 {
             buckets.putIfAbsent(name, mutableMapOf())
             Bucket(name)
         }
+        every { deleteObject(capture(bucketName), capture(key)) } answers {
+            buckets[bucketName.captured]?.remove(key.captured)
+        }
     }
 }

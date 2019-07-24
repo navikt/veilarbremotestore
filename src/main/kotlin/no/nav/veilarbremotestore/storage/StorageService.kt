@@ -3,6 +3,7 @@ package no.nav.veilarbremotestore.storage
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
+import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.features.BadRequestException
 import no.nav.veilarbremotestore.Metrics.Companion.timed
@@ -54,7 +55,8 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
     }
 
     override fun slettVeilederObjekt(id: String) {
-        s3.deleteBucket(id);
+        s3.deleteObject(VEILEDERREMOTESTORE_BUCKET_NAME, id)
+
     }
 
     private fun lagreVeiledere(veileder: VeilederObjekt, id: String) {
