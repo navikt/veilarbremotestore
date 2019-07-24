@@ -7,7 +7,7 @@ val logstashVersion = "5.1"
 val amazonS3Version = "1.11.555"
 val konfigVersion = "1.6.10.0"
 
-val mainClass = "no.nav.modiapersonoversikt.ApplicationKt"
+val mainClass = "no.nav.veilarbremotestore.ApplicationKt"
 
 plugins {
     application
