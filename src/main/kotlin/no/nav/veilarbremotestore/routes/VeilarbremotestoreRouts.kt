@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+import io.ktor.util.filter
 import no.nav.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
@@ -22,21 +23,35 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/{ident}") {
         conditionalAuthenticate(useAuthentication) {
-            get ("/{key}"){
-
-            }
             get {
                 call.parameters["ident"]
                         ?.let {
                             val veileder = provider.hentVeilederObjekt(it)
-                            if(veileder != null)
-                                call.respond(veileder)
+                            if(veileder != null) {
+                                val params = call.request.queryParameters["keys"]?.split(",")?.map { it.trim() }
+                                println(params)
+                                if (params == null) {
+                                    call.respond(veileder)
+                                } else {
+                                    val ret = veileder.filter { it.key in params }
+                                    call.respond(ret)
+                                }
+                            }
                             else{
                                 call.respond(HttpStatusCode.NoContent)
                             }
                         }
                         ?: call.respond(HttpStatusCode.BadRequest)
             }
+            patch {
+                call.parameters["ident"]
+                        ?.let {
+                            call.respond(provider.oppdaterVeilederFelt(call.receive(),it))
+                        }
+                        ?: call.respond(HttpStatusCode.BadRequest)
+            }
+
+
             put {
                 call.parameters["ident"]
                         ?.let {

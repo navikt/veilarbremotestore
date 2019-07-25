@@ -3,7 +3,6 @@ package no.nav.veilarbremotestore.storage
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
-import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.features.BadRequestException
 import no.nav.veilarbremotestore.Metrics.Companion.timed
@@ -19,29 +18,34 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
         lagS3BucketsHvisNodvendig(VEILEDERREMOTESTORE_BUCKET_NAME)
     }
 
-
-
-
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, veilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
-                 null
+                null
             }
         }
 
         return res
     }
 
-    override fun oppdaterVeilederObjekt(veileder: VeilederObjekt, id: String): VeilederObjekt {
-        if (hentVeilederObjekt(id) != null ) {
-            lagreVeiledere(veileder, id)
+    override fun oppdaterVeilederFelt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
+        val original = hentVeilederObjekt(id) ?: throw BadRequestException("Fant ikke veileder med id: $id")
+        val tmp = veilederObjekt.filter { it.key in original.keys }.toMutableMap()
+        return original
+                .filterTo(tmp) { it.key !in tmp }
+                .also { lagreVeiledere(it, id) }
+    }
+
+    override fun oppdaterVeilederObjekt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
+        if (hentVeilederObjekt(id) != null) {
+            lagreVeiledere(veilederObjekt, id)
         } else {
             throw BadRequestException("Fant ikke veileder med id: ${id}")
         }
-        return veileder
+        return veilederObjekt
     }
 
 
