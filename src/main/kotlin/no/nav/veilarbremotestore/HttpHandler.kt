@@ -72,11 +72,6 @@ fun createHttpServer(applicationState: ApplicationState,
 
     routing {
         route("veilarbremotestore") {
-            static {
-                resources("webapp")
-                defaultResource("index.html", "webapp")
-            }
-
             naisRoutes(readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
             veilarbstoreRoutes(provider, useAuthentication)
         }
