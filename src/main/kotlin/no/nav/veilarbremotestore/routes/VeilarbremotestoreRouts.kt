@@ -7,7 +7,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
-import io.ktor.util.filter
 import no.nav.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
@@ -71,8 +70,20 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             delete {
                 call.parameters["ident"]
                         ?.let {
-                            provider.slettVeilederObjekt(it)
-                            call.respond(HttpStatusCode.OK, "Deleted $it")
+                            val params = call.request.queryParameters["keys"]?.split(",")?.map { it.trim() }
+                            if (params == null) {
+                                provider.slettVeilederObjekt(it)
+                                call.respond(HttpStatusCode.OK, "Deleted $it")
+                            } else {
+                                val veileder = provider.hentVeilederObjekt(it)
+                                val ret = veileder?.filter { it.key in params }
+                                if(ret != null){
+                                    provider.slettVeilederFelter(ret, it)
+                                    call.respond(HttpStatusCode.OK, "Deleted $params $it")
+                                }else{
+                                    call.respond(HttpStatusCode.BadRequest)
+                                }
+                            }
                         }
                         ?: call.respond(HttpStatusCode.BadRequest)
             }

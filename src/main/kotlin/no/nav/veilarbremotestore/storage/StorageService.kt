@@ -39,6 +39,14 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
                 .also { lagreVeiledere(it, id) }
     }
 
+
+    override fun slettVeilederFelter(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
+        val original = hentVeilederObjekt(id) ?: throw BadRequestException("Fant ikke veileder med id: $id")
+        val tmp = original.filter { it.key !in veilederObjekt.keys }
+        lagreVeiledere(tmp, id)
+        return tmp
+    }
+
     override fun oppdaterVeilederObjekt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
         if (hentVeilederObjekt(id) != null) {
             lagreVeiledere(veilederObjekt, id)
