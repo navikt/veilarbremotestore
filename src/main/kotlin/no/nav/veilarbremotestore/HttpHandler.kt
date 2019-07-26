@@ -40,7 +40,9 @@ fun createHttpServer(applicationState: ApplicationState,
     install(CORS) {
         anyHost()
         method(HttpMethod.Put)
+        method(HttpMethod.Patch)
         method(HttpMethod.Delete)
+
         allowCredentials = true
     }
 
