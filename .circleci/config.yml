@@ -1,12 +1,12 @@
 version: 2.1
 orbs:
-  pus: navikt/pus-orb@0.0.11
+  pus: navikt/pus-orb@0.0.12
 
 workflows:
   version: 2
   commit:
     jobs:
-      - pus/gradle_test:
+      - pus/gradle-test:
           context: pus
           filters:
             branches:
@@ -18,13 +18,15 @@ workflows:
             branches:
               only: master
       - hold:
-          requires: pus/gradle-bygg-og-deploy
+          requires:
+            - pus/gradle-bygg-og-deploy
           type: approval
           filters:
             branches:
               only: master
       - pus/deploy-latest:
-          requires: hold
+          requires:
+            - hold
           context: pus
           cluster: dev-fss #TODO: endre denne til prod-fss etterhvert
           filepath: ./nais.yaml
