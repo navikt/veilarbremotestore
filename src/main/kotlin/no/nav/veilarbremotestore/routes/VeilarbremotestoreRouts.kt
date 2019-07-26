@@ -3,12 +3,11 @@ package no.nav.veilarbremotestore.routes
 import io.ktor.application.call
 import io.ktor.auth.AuthenticationRouteSelector
 import io.ktor.auth.authenticate
-import io.ktor.features.BadRequestException
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
-import kotlinx.coroutines.isActive
+import no.nav.veilarbremotestore.JwtUtil.Companion.getSubject
 import no.nav.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
@@ -22,80 +21,70 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 
 
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
-    route("/{ident}") {
+    route("/") {
         conditionalAuthenticate(useAuthentication) {
-
-
             get {
-                call.parameters["ident"]
-                        ?.let { ident ->
-                            provider.hentVeilederObjekt(ident)
-                                    ?.let { veilederFelter ->
-                                        val q = call.request.queryParameters
-                                        q["ressurs"]
-                                                ?.split(",")
-                                                ?.map { it.trim() }
-                                                ?.let { queryKeys ->
-                                                    call.respond(veilederFelter.filter { felt -> felt.key in queryKeys })
-                                                }
-                                                ?: if(q.isEmpty()){
-                                                    call.respond(veilederFelter)
-                                                } else {
-                                                    call.respond(HttpStatusCode.BadRequest)
-                                                }
+                val ident = getSubject(call)
+                provider.hentVeilederObjekt(ident)
+                        ?.let { veilederFelter ->
+                            val q = call.request.queryParameters
+                            q["ressurs"]
+                                    ?.split(",")
+                                    ?.map { it.trim() }
+                                    ?.let { queryKeys ->
+                                        call.respond(veilederFelter.filter { felt -> felt.key in queryKeys })
                                     }
-                                    ?: call.respond(HttpStatusCode.NoContent)
+                                    ?: if (q.isEmpty()) {
+                                        call.respond(veilederFelter)
+                                    } else {
+                                        call.respond(HttpStatusCode.BadRequest)
+                                    }
                         }
-                        ?: call.respond(HttpStatusCode.BadRequest)
+                        ?: call.respond(HttpStatusCode.NoContent)
+
             }
 
-
-
-
             patch {
-                call.parameters["ident"]
-                        ?.let {
-                            call.respond(provider.oppdaterVeilederFelt(call.receive(), it))
-                        }
-                        ?: call.respond(HttpStatusCode.BadRequest)
+                val ident = getSubject(call)
+                call.respond(provider.oppdaterVeilederFelt(call.receive(), ident))
+
             }
 
 
             put {
-                call.parameters["ident"]
-                        ?.let {
-                            call.respond(provider.oppdaterVeilederObjekt(call.receive(), it))
-                        }
-                        ?: call.respond(HttpStatusCode.BadRequest)
+                val ident = getSubject(call)
+                call.respond(provider.oppdaterVeilederObjekt(call.receive(), ident))
+
             }
 
             post {
-                call.parameters["ident"]
-                        ?.let {
-                            call.respond(provider.leggTilVeilederObjekt(call.receive(), it))
-                        }
-                        ?: call.respond(HttpStatusCode.BadRequest)
+                val ident = getSubject(call)
+                call.respond(provider.leggTilVeilederObjekt(call.receive(), ident))
+
             }
 
             delete {
-                call.parameters["ident"]
-                        ?.let { ident ->
-                            call.request.queryParameters["ressurs"]?.split(",")?.map { it.trim() }
-                                    ?.let { queryParams ->
-                                        val veileder = provider.hentVeilederObjekt(ident)
-                                        veileder?.filter { it.key in queryParams }
-                                                ?.let {
-                                                    provider.slettVeilederFelter(it, ident)
-                                                    call.respond(HttpStatusCode.OK, "Deleted ${it.keys} on $ident")
-                                                }
-                                                ?: call.respond(HttpStatusCode.BadRequest)
+                val ident = getSubject(call)
+                provider.hentVeilederObjekt(ident)
+                        ?.let { veilederFelter ->
+                            val q = call.request.queryParameters
+                            q["ressurs"]
+                                    ?.split(",")
+                                    ?.map { it.trim() }
+                                    ?.let { queryKeys ->
+                                        val toBeDeleted = veilederFelter.filter { felt -> felt.key in queryKeys }
+                                        provider.slettVeilederFelter(toBeDeleted, ident)
+                                        call.respond(HttpStatusCode.OK, "Deleted ${queryKeys} on $ident")
                                     }
-                                    ?: let {
+                                    ?: if (q.isEmpty()) {
                                         provider.slettVeilederObjekt(ident)
-                                        call.respond(HttpStatusCode.OK, "Deleted $it")
+                                        call.respond(HttpStatusCode.OK, "Deleted $ident")
+                                    } else {
+                                        call.respond(HttpStatusCode.BadRequest)
                                     }
                         }
-                        ?: call.respond(HttpStatusCode.BadRequest)
+                        ?: call.respond(HttpStatusCode.NoContent)
+
             }
         }
     }

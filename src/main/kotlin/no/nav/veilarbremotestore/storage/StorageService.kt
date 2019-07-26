@@ -31,13 +31,11 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
         return res
     }
 
-    override fun oppdaterVeilederFelt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
-        val original = hentVeilederObjekt(id) ?: throw BadRequestException("Fant ikke veileder med id: $id")
-        val tmp = veilederObjekt.filter { it.key in original.keys }.toMutableMap()
-        return original
-                .filterTo(tmp) { it.key !in tmp }
-                .also { lagreVeiledere(it, id) }
-    }
+    override fun oppdaterVeilederFelt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt =
+         hentVeilederObjekt(id)
+                ?.filterTo(veilederObjekt.toMutableMap()) { it.key !in veilederObjekt }
+                ?.also { lagreVeiledere(it, id) }
+                ?: throw BadRequestException("Fant ikke veileder med id: $id")
 
 
     override fun slettVeilederFelter(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
