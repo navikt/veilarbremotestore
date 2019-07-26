@@ -1,5 +1,3 @@
-import com.moowork.gradle.node.npm.NpmTask
-
 val ktorVersion = "1.2.0"
 val prometheusVersion = "0.4.0"
 val logbackVersion = "1.2.3"
