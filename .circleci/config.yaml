@@ -1,0 +1,18 @@
+version: 2.1
+orbs:
+  pus: navikt/pus-orb@0.0.10
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - pus/gradle_test:
+          context: pus
+          filters:
+            branches:
+              ignore: master
+      - pus/gradle_bygg_og_deploy:
+          context: pus
+          filters:
+            branches:
+              only: master

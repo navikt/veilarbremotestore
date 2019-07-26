@@ -2,11 +2,11 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: veilarbremotestore
-  namespace: default
+  namespace: {{namespace}}
   labels:
-    team: {{team}}
+    team: voff
 spec:
-  image: "navikt/veilarbremotestore:{{version}}"
+  image: navikt/veilarbremotestore:{{version}}
   port: 7070
   team: personoversikt
   liveness:
@@ -27,12 +27,12 @@ spec:
       cpu: 50m
       memory: 128Mi
   ingresses:
-    - https://veilarbremotestore.nais.adeo.no
-    - https://modapp.adeo.no/veilarbremotestore
+    - https://veilarbremotestore.nais.preprod.local
+    - https://app-{{namespace}}.adeo.no/veilarbremotestore
   replicas:
     min: 1
-    max: 1
-    cpuThresholdPercentage: 50
+    max: 2
+    cpuThresholdPercentage: 90
   prometheus:
     enabled: true
     path: /veilarbremotestore/metrics
@@ -40,10 +40,10 @@ spec:
     enabled: true
   env:
     - name: S3_URL
-      value: s3.nais.adeo.no
+      value: s3.nais.preprod.local
     - name: S3_REGION
       value: us-east-1
     - name: ISSO_JWKS_URL
-      value: https://isso.adeo.no/isso/oauth2/connect/jwk_uri
+      value: https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri
     - name: ISSO_ISSUER
-      value: https://isso.adeo.no:443/isso/oauth2
+      value: https://isso-q.adeo.no:443/isso/oauth2
