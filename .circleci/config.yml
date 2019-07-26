@@ -13,6 +13,7 @@ workflows:
               ignore: master
       - pus/gradle_bygg_og_deploy:
           context: pus
+          cluster: dev-fss
           filters:
             branches:
               only: master
