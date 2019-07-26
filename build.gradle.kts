@@ -71,55 +71,9 @@ tasks.withType<Wrapper> {
     gradleVersion = "5.3.1"
 }
 
-task<NpmTask>("npmCI") {
-    setWorkingDir(file("${project.projectDir}/frontend"))
-    setArgs(listOf("ci"))
-}
 
-val syncFrontend = copy {
-    from("frontend/build")
-    into("src/main/resources/webapp")
-}
-task<NpmTask>("npmBuild") {
-    setWorkingDir(file("${project.projectDir}/frontend"))
-    setArgs(listOf("run", "build"))
-
-    doLast {
-        copy {
-            from("frontend/build")
-            into("build/resources/main/webapp")
-        }
-    }
-}
-
-task("syncFrontend") {
-    copy {
-        from("frontend/build")
-        into("src/main/resources/webapp")
-    }
-}
-
-task<Jar>("fatJar") {
-    baseName = "app"
-
-    manifest {
-        attributes["Main-Class"] = mainClass
-        configurations.runtimeClasspath.get().joinToString(separator = " ") {
-            it.name
-        }
-    }
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-    with(tasks.jar.get() as CopySpec)
-}
 
 tasks {
-    "npmBuild" {
-        dependsOn("npmCI")
-    }
-    "fatJar" {
-        dependsOn("npmBuild")
-    }
     "jar" {
-        dependsOn("fatJar")
     }
 }
