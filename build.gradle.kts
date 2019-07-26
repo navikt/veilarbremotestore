@@ -12,7 +12,10 @@ val mainClass = "no.nav.veilarbremotestore.ApplicationKt"
 plugins {
     application
     kotlin("jvm") version "1.3.21"
-    id("com.moowork.node") version "1.2.0"
+}
+
+configurations.compileClasspath {
+    resolutionStrategy.activateDependencyLocking()
 }
 
 buildscript {
@@ -55,11 +58,6 @@ repositories {
     maven("https://dl.bintray.com/kotlin/ktor/")
     jcenter()
     mavenCentral()
-}
-
-node {
-    version = "10.15.3"
-    download = true
 }
 
 java {

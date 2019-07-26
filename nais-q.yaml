@@ -8,7 +8,6 @@ metadata:
 spec:
   image: navikt/veilarbremotestore:{{version}}
   port: 7070
-  team: personoversikt
   liveness:
     path: /veilarbremotestore/isAlive
     initialDelay: 20
