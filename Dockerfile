@@ -1,3 +1,3 @@
 FROM navikt/java:8
 
-COPY build/libs/*.jar ./
+COPY build/libs/veilarbremotestore.jar ./app.jar
