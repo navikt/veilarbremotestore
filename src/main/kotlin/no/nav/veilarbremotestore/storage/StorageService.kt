@@ -14,6 +14,7 @@ private const val VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
 private val log = LoggerFactory.getLogger("veilarbremotestore.StorageService")
 
 class StorageService(private val s3: AmazonS3) : StorageProvider {
+
     init {
         lagS3BucketsHvisNodvendig(VEILEDERREMOTESTORE_BUCKET_NAME)
     }
