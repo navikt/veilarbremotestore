@@ -35,7 +35,7 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
          hentVeilederObjekt(id)
                 ?.filterTo(veilederObjekt.toMutableMap()) { it.key !in veilederObjekt }
                 ?.also { lagreVeiledere(it, id) }
-                ?: throw BadRequestException("Fant ikke veileder med id: $id")
+                ?: leggTilVeilederObjekt(veilederObjekt, id)
 
 
     override fun slettVeilederFelter(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt {
