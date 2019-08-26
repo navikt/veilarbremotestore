@@ -9,4 +9,7 @@ interface StorageProvider {
     fun leggTilVeilederObjekt(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt
     fun slettVeilederFelter(veilederObjekt: VeilederObjekt, id: String): VeilederObjekt
     fun slettVeilederObjekt(id: String)
+    fun leggTilRessurs(id: String)
+    fun oppdaterRessurs(id: String)
+    fun hentRessurs(id: String)
 }
