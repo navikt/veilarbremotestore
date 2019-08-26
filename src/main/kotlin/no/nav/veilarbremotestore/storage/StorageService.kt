@@ -66,7 +66,6 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
 
     override fun slettVeilederObjekt(id: String) {
         s3.deleteObject(VEILEDERREMOTESTORE_BUCKET_NAME, id)
-
     }
 
     private fun lagreVeiledere(veileder: VeilederObjekt, id: String) {
