@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.features.BadRequestException
 import no.nav.veilarbremotestore.Metrics.Companion.timed
 import no.nav.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
+import no.nav.veilarbremotestore.model.EndringsVersjonerObjekt
 import no.nav.veilarbremotestore.model.VeilederObjekt
 import org.slf4j.LoggerFactory
 
@@ -68,9 +69,23 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
         s3.deleteObject(VEILEDERREMOTESTORE_BUCKET_NAME, id)
     }
 
-    private fun lagreVeiledere(veileder: VeilederObjekt, id: String) {
+    override fun leggTilRessurs(id: String) {
         timed("lagre_veiledere") {
-            s3.putObject(VEILEDERREMOTESTORE_BUCKET_NAME, id, objectMapper.writeValueAsString(veileder))
+            s3.putObject(VEILEDERREMOTESTORE_BUCKET_NAME, id, objectMapper.writeValueAsString(""))
+        }
+    }
+
+    override fun oppdaterRessurs(id: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hentRessurs(id: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun lagreVeiledere(veilederObjekt: VeilederObjekt, id: String) {
+        timed("lagre_veiledere") {
+            s3.putObject(VEILEDERREMOTESTORE_BUCKET_NAME, id, objectMapper.writeValueAsString(veilederObjekt))
         }
     }
 

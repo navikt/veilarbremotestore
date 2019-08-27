@@ -11,17 +11,17 @@ fun Route.internalRoutes(provider: StorageProvider) {
 
             get("{resourceName}") {
                 val resourceName = call.parameters["resourceName"]
-                call.respond(provider.oppdaterVeilederFelt(call.receive(), ident))
+                //call.respond(provider.oppdaterVeilederFelt(call.receive(), "1"))
             }
 
             post("{resourceName}") {
                 val resourceName = call.parameters["resourceName"]
-                call.respond(provider.leggTilRessurs(call.receive(), ident))
+                //call.respond(provider.leggTilRessurs(call.receive()))
             }
 
             put("{resourceName}") {
                 val resourceName = call.parameters["resourceName"]
-                call.respond(provider.oppdaterRessurs(call.receive(), ident))
+                //call.respond(provider.oppdaterRessurs(call.receive()))
             }
     }
 }
