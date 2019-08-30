@@ -1,5 +1,6 @@
 package no.nav.veilarbremotestore
 
+import no.nav.veilarbremotestore.service.AutomatiskSlettingService
 import no.nav.veilarbremotestore.storage.StorageService
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -7,10 +8,11 @@ import java.util.concurrent.TimeUnit
 private val log = LoggerFactory.getLogger("veilarbremotestore.LocalRun")
 
 fun runLocally(useAuthentication: Boolean) {
+    val provider = StorageService(createS3Stub())
     val applicationState = ApplicationState()
     val applicationServer = createHttpServer(
             applicationState,
-            StorageService(createS3Stub()),
+            provider,
             7070,
             Configuration(),
             useAuthentication
@@ -22,6 +24,7 @@ fun runLocally(useAuthentication: Boolean) {
         applicationServer.stop(1, 1, TimeUnit.SECONDS)
     })
 
+    AutomatiskSlettingService(provider = provider);
     applicationServer.start(wait = true)
 }
 

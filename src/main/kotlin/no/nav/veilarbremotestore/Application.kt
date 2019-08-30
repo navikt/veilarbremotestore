@@ -4,6 +4,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import no.nav.veilarbremotestore.service.AutomatiskSlettingService
 import no.nav.veilarbremotestore.storage.StorageService
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -20,10 +21,11 @@ fun main() {
             .enablePathStyleAccess()
             .withCredentials(AWSStaticCredentialsProvider(credentials)).build()
 
+    val provider = StorageService(s3)
     val applicationState = ApplicationState()
     val applicationServer = createHttpServer(
             applicationState = applicationState,
-            provider = StorageService(s3),
+            provider = provider,
             configuration = configuration
     )
 
@@ -33,5 +35,6 @@ fun main() {
         applicationServer.stop(5, 5, TimeUnit.SECONDS)
     })
 
+    AutomatiskSlettingService(provider = provider);
     applicationServer.start(wait = true)
 }

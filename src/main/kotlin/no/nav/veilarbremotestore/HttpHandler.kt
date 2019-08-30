@@ -20,6 +20,7 @@ import io.ktor.server.netty.Netty
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.dropwizard.DropwizardExports
 import no.nav.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
+import no.nav.veilarbremotestore.routes.internalRoutes
 import no.nav.veilarbremotestore.routes.naisRoutes
 import no.nav.veilarbremotestore.routes.veilarbstoreRoutes
 import no.nav.veilarbremotestore.storage.StorageProvider
@@ -74,6 +75,7 @@ fun createHttpServer(applicationState: ApplicationState,
     routing {
         route("veilarbremotestore") {
             naisRoutes(readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
+            internalRoutes(provider)
             veilarbstoreRoutes(provider, useAuthentication)
         }
     }

@@ -1,10 +1,7 @@
 package no.nav.veilarbremotestore
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.Bucket
-import com.amazonaws.services.s3.model.CreateBucketRequest
-import com.amazonaws.services.s3.model.PutObjectResult
-import com.amazonaws.services.s3.model.S3Object
+import com.amazonaws.services.s3.model.*
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -29,6 +26,10 @@ fun createS3Stub(): AmazonS3 {
         every { putObject(capture(bucketName), capture(key), capture(content)) } answers {
             buckets[bucketName.captured]?.put(key.captured, content.captured)
             PutObjectResult()
+        }
+        every {listObjectsV2(capture(bucketName)).objectSummaries} answers {
+            emptyArray<S3ObjectSummary>()
+            // buckets.mapTo(emptyArray<S3ObjectSummary>().toMutableList()) {  S3ObjectSummary() };
         }
         every { listBuckets() } returns buckets.keys.map { Bucket(it) }
         every { createBucket(capture(createBucketRequest)) } answers {

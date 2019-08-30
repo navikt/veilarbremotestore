@@ -50,8 +50,8 @@ dependencies {
 }
 
 repositories {
-    maven("https://repo.adeo.no/repository/maven-releases")
-    maven("https://repo.adeo.no/repository/maven-central")
+    //maven("https://repo.adeo.no/repository/maven-releases")
+    //maven("https://repo.adeo.no/repository/maven-central")
     maven("https://plugins.gradle.org/m2/")
     maven("https://dl.bintray.com/kotlin/ktor/")
     jcenter()
