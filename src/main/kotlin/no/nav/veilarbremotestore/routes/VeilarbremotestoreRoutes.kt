@@ -54,7 +54,6 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             put {
                 val ident = getSubject(call)
                 call.respond(provider.oppdaterVeilederObjekt(call.receive(), ident))
-
             }
 
             post {
