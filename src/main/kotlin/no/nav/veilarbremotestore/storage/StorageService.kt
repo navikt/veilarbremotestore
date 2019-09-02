@@ -22,7 +22,7 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
-                val hashedVeilederId = hashVeilederId(veilederId)
+                val hashedVeilederId = hashVeilederId(veilederId);
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
@@ -59,7 +59,7 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
 
     override fun leggTilVeilederObjekt(veilederObjekt: VeilederObjekt, veilederId: String): VeilederObjekt {
         if (hentVeilederObjekt(veilederId) == null) {
-            lagreVeiledere(veilederObjekt, hashVeilederId(veilederId))
+            lagreVeiledere(veilederObjekt, veilederId)
         } else {
             throw BadRequestException("Finnes allerede data på veilederen")
         }
