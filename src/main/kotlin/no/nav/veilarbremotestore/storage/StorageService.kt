@@ -8,11 +8,9 @@ import io.ktor.features.BadRequestException
 import no.nav.veilarbremotestore.Metrics.Companion.timed
 import no.nav.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.veilarbremotestore.model.VeilederObjekt
-import org.slf4j.LoggerFactory
 import java.security.MessageDigest
 
 private const val VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
-private val log = LoggerFactory.getLogger("veilarbremotestore.StorageService")
 
 class StorageService(private val s3: AmazonS3) : StorageProvider {
     init {
@@ -34,21 +32,21 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
     }
 
     override fun oppdaterVeilederFelt(veilederObjekt: VeilederObjekt, veilederId: String): VeilederObjekt =
-            hentVeilederObjekt(veilederId)
-                    ?.filterTo(veilederObjekt.toMutableMap()) { it.key !in veilederObjekt }
-                    ?.also { lagreVeiledere(it, veilederId) }
-                    ?:leggTilVeilederObjekt(veilederObjekt, veilederId)
+            (hentVeilederObjekt(veilederId)
+                    ?.map { it.key to veilederObjekt[it.key]?.let { it1 -> oppdaterObjektVerdier(it.value, it1) } }?.toMap()
+                    ?.also { lagreVeiledere(it as VeilederObjekt, veilederId) }
+                    ?:leggTilVeilederObjekt(veilederObjekt, veilederId)) as VeilederObjekt;
 
 
     override fun slettVeilederFelter(veilederObjekt: VeilederObjekt, veilederId: String): VeilederObjekt {
         val original = hentVeilederObjekt(veilederId) ?: throw BadRequestException("Fant ikke veileder med id: $veilederId")
-        val tmp = original.filter { it.key !in veilederObjekt.keys }
-        lagreVeiledere(tmp, veilederId)
+        val tmp = original.map { it.key to veilederObjekt[it.key]?.let { it1 -> slettVeilederObjektVerdier(it.value, it1) } }.toMap()
+        lagreVeiledere(tmp as VeilederObjekt, veilederId)
         return tmp
     }
 
     override fun oppdaterVeilederObjekt(veilederObjekt: VeilederObjekt, veilederId: String): VeilederObjekt {
-       if (hentVeilederObjekt(veilederId) != null) {
+        if (hentVeilederObjekt(veilederId) != null) {
             lagreVeiledere(veilederObjekt, veilederId)
         } else {
             throw BadRequestException("Fant ikke veileder med id: $veilederId")
@@ -90,6 +88,24 @@ class StorageService(private val s3: AmazonS3) : StorageProvider {
                         s3.createBucket(CreateBucketRequest(it).withCannedAcl(CannedAccessControlList.Private))
                     }
         }
+    }
+
+    private fun slettVeilederObjektVerdier (veilederObjektVerdier: String, vedierSomSkallSlettes: String): String {
+        return stringToList(veilederObjektVerdier)
+                .filter{!stringToList(vedierSomSkallSlettes).contains(it)}
+                .joinToString (",")
+    }
+
+    private fun oppdaterObjektVerdier (veilederObjektVerdier: String, vedierSomSkallOppdateres: String): String {
+        return stringToList(veilederObjektVerdier)
+                .union(stringToList(vedierSomSkallOppdateres).toSet())
+                .joinToString (",")
+    }
+
+
+    private fun stringToList(s: String) : List<String> {
+        return s.split(",")
+                .map { it.trim() }
     }
 
     private fun hashVeilederId (veilederId: String):  String {
