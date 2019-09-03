@@ -3,10 +3,12 @@ kind: "Application"
 metadata:
   name: veilarbremotestore
   namespace: default
+  cluster:
+    - prod-fss
   labels:
     team: voff
 spec:
-  image: navikt/veilarbremotestore:{{version}}
+  image: docker.pkg.github.com/navikt/veilarbremotestore/veilarbremotestore:{{version}}
   port: 7070
   liveness:
     path: /veilarbremotestore/isAlive
