@@ -28,7 +28,7 @@ workflows:
           requires:
             - hold
           context: pus
-          cluster: dev-fss #TODO: endre denne til prod-fss etterhvert
+          cluster: prod-fss
           filepath: ./nais.yaml
           filters:
             branches:
