@@ -1,34 +1,25 @@
 version: 2.1
 orbs:
-  pus: navikt/pus-orb@0.0.16
-
+  pus: navikt/pus-orb@0.0.37
 workflows:
   version: 2
   commit:
     jobs:
-      - pus/gradle-test:
+      - pus/test-backend:
           context: pus
           filters:
             branches:
-              ignore: master
+              ignore:
+                - master
+                - dev
       - pus/gradle-bygg-og-deploy:
           context: pus
-          cluster: dev-fss
+          filepath: ./nais-q.yaml
           filters:
             branches:
-              only: master
-      - hold:
-          requires:
-            - pus/gradle-bygg-og-deploy
-          type: approval
-          filters:
-            branches:
-              only: master
-      - pus/deploy-latest:
-          requires:
-            - hold
+              only: dev
+      - pus/gradle-bygg-og-deploy:
           context: pus
-          cluster: prod-fss
           filepath: ./nais.yaml
           filters:
             branches:
