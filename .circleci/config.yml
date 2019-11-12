@@ -5,7 +5,7 @@ workflows:
   version: 2
   commit:
     jobs:
-      - pus/test-backend:
+      - pus/gradle-test:
           context: pus
           filters:
             branches:
