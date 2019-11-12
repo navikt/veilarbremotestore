@@ -2,11 +2,11 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: veilarbremotestore
-  namespace: {{namespace}}
-  cluster:
-    - dev-fss
+  namespace: q0
+  cluster: dev-fss
   labels:
-    team: voff
+    team: pto
+    branch: dev
 spec:
   image: docker.pkg.github.com/navikt/veilarbremotestore/veilarbremotestore:{{version}}
   port: 7070
@@ -41,9 +41,9 @@ spec:
     enabled: true
   env:
     - name: S3_URL
-      value: s3.nais.preprod.local
+      value: objectstore.nais.preprod.local
     - name: S3_REGION
-      value: us-east-1
+      value: eu-north-1
     - name: ISSO_JWKS_URL
       value: https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri
     - name: ISSO_ISSUER
