@@ -1,3 +1,3 @@
 FROM navikt/java:8
 
-COPY build/libs/*.jar ./
+ADD /target/veilarbremotestore-1-jar-with-dependencies.jar app.jar

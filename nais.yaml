@@ -6,7 +6,6 @@ metadata:
   cluster: prod-fss
   labels:
     team: pto
-    branch: master
 spec:
   image: docker.pkg.github.com/navikt/veilarbremotestore/veilarbremotestore:{{version}}
   port: 7070
