@@ -2,7 +2,7 @@ name: Build, push and deploy
 on: push
 env:
   IMAGE_TAG: ${{ github.sha }}
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbfilter
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/veilarbremotestore
   PRINT_PAYLOAD: true
 jobs:
   test:
