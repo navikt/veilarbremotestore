@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/navikt/veilarbremotestore.svg?style=svg)](https://circleci.com/gh/navikt/veilarbremotestore)
-
 ### Kjør Backend med sikkerhet
 1. Start `LocalRun.kt`
 2. Kjør `cd frontend && npm run start`
