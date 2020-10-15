@@ -13,7 +13,8 @@ private val defaultProperties = ConfigurationMap(
                 "S3_URL" to notUsedLocally,
                 "S3_REGION" to notUsedLocally,
                 "ISSO_JWKS_URL" to "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri",
-                "ISSO_ISSUER" to "https://isso-q.adeo.no:443/isso/oauth2"
+                "ISSO_ISSUER" to "https://isso-q.adeo.no:443/isso/oauth2",
+                "NAMESPACE" to "q"
         )
 )
 

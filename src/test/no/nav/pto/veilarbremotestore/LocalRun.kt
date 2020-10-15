@@ -13,7 +13,7 @@ fun runLocally(useAuthentication: Boolean) {
     val applicationState = ApplicationState()
     val applicationServer = createHttpServer(
             applicationState,
-            StorageService(createS3Stub()),
+            StorageService(createS3Stub(),"local"),
             7070,
             Configuration(),
             useAuthentication
