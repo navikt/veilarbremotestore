@@ -47,3 +47,5 @@ spec:
       value: https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri
     - name: ISSO_ISSUER
       value: https://isso-q.adeo.no:443/isso/oauth2
+    - name: NAMESPACE
+      value: {{namespace}}

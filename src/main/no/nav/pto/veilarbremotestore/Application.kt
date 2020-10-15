@@ -23,7 +23,7 @@ fun main() {
     val applicationState = ApplicationState()
     val applicationServer = createHttpServer(
             applicationState = applicationState,
-            provider = StorageService(s3),
+            provider = StorageService(s3, configuration.namespace),
             configuration = configuration
     )
 
