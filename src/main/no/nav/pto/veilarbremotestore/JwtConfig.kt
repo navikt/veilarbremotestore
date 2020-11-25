@@ -40,15 +40,6 @@ class JwtUtil {
             }
         }
 
-        fun getSubject(call: ApplicationCall): String? {
-            if (call.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
-                return call.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
-            }
-            return call.principal<JWTPrincipal>()
-                ?.payload
-                ?.subject
-        }
-
         fun makeJwkProvider(jwksUrl: String): JwkProvider =
                 JwkProviderBuilder(URL(jwksUrl))
                         .cached(10, 24, TimeUnit.HOURS)

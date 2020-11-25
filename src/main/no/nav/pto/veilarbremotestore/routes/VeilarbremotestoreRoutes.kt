@@ -1,13 +1,12 @@
 package no.nav.pto.veilarbremotestore.routes
 
-import io.ktor.application.call
-import io.ktor.auth.AuthenticationRouteSelector
-import io.ktor.auth.authenticate
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
-import no.nav.pto.veilarbremotestore.JwtUtil.Companion.getSubject
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
@@ -24,7 +23,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
     route("/") {
         conditionalAuthenticate(useAuthentication) {
             get {
-                val ident = getSubject(call)
+                val ident = call.getNavident()
                 ident?.let { navIdent ->
                     provider.hentVeilederObjekt(navIdent)
                         ?.let { veilederFelter ->
@@ -46,7 +45,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             }
 
             patch {
-                val ident = getSubject(call)
+                val ident = call.getNavident()
                 ident?.let {
                     call.respond(provider.oppdaterVeilederFelt(call.receive(), ident))
                 }
@@ -54,21 +53,21 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 
 
             put {
-                val ident = getSubject(call)
+                val ident = call.getNavident()
                 ident?.let {
                     call.respond(provider.oppdaterVeilederObjekt(call.receive(), ident))
                 }
             }
 
             post {
-                val ident = getSubject(call)
+                val ident = call.getNavident()
                 ident?.let {
                     call.respond(provider.leggTilVeilederObjekt(call.receive(), ident))
                 }
             }
 
             delete {
-                val ident = getSubject(call)
+                val ident = call.getNavident()
                 ident?.let {
                     provider.hentVeilederObjekt(ident)
                         ?.let { veilederFelter ->
@@ -93,5 +92,14 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             }
         }
     }
+}
+
+fun ApplicationCall.getNavident(): String? {
+    if (this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
+        return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
+    }
+    return this.principal<JWTPrincipal>()
+        ?.payload
+        ?.subject
 }
 

@@ -1,25 +1,22 @@
 package no.nav.pto.veilarbremotestore
 
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.jwt
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
+import io.ktor.features.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.jackson.JacksonConverter
 import io.ktor.metrics.dropwizard.DropwizardMetrics
 import io.ktor.request.path
-import io.ktor.routing.route
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.dropwizard.DropwizardExports
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
+import no.nav.pto.veilarbremotestore.routes.getNavident
 import no.nav.pto.veilarbremotestore.routes.internalRoutes
 import no.nav.pto.veilarbremotestore.routes.naisRoutes
 import no.nav.pto.veilarbremotestore.routes.veilarbstoreRoutes
@@ -72,9 +69,7 @@ fun createHttpServer(applicationState: ApplicationState,
     install(CallLogging) {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/veilarbremotestore") }
-        JwtUtil.Companion::getSubject.let {
-            mdc("userId", JwtUtil.Companion::getSubject)
-        }
+        mdc("userId", { applicationCall -> applicationCall.getNavident() })
     }
 
     install(DropwizardMetrics) {
