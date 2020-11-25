@@ -72,7 +72,9 @@ fun createHttpServer(applicationState: ApplicationState,
     install(CallLogging) {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/veilarbremotestore") }
-        mdc("userId", JwtUtil.Companion::getSubject)
+        JwtUtil.Companion::getSubject.let {
+            mdc("userId", JwtUtil.Companion::getSubject)
+        }
     }
 
     install(DropwizardMetrics) {
