@@ -48,11 +48,19 @@ fun createHttpServer(applicationState: ApplicationState,
 
     if (useAuthentication) {
         install(Authentication) {
-            jwt {
-                authHeader(JwtUtil.Companion::useJwtFromCookie)
+            jwt("AzureAD") {
+                skipWhen { applicationCall -> applicationCall.request.cookies["isso-idtoken"] == null }
                 realm = "veilarbremotestore"
-                verifier(configuration.jwksUrl, configuration.jwtIssuer)
-                validate { JwtUtil.validateJWT(it) }
+                authHeader(JwtUtil.Companion::useAzureJwtFromCookie)
+                verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
+                validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
+            }
+            jwt("OpenAM") {
+                skipWhen { applicationCall -> applicationCall.request.cookies["ID_token"] == null }
+                realm = "veilarbremotestore"
+                authHeader(JwtUtil.Companion::useJwtFromCookie)
+                verifier(configuration.issoJwksUrl, configuration.issoJwtIssuer)
+                validate { JwtUtil.validateJWT(it, null) }
             }
         }
     }

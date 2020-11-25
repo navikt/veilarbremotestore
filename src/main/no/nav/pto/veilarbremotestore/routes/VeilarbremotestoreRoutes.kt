@@ -12,7 +12,7 @@ import no.nav.pto.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
     if (useAuthentication) {
-        return authenticate(build = build)
+        return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
     route.build()

@@ -7,10 +7,10 @@ import com.auth0.jwt.impl.JWTParser
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.auth0.jwt.interfaces.Payload
 import io.ktor.application.ApplicationCall
-import io.ktor.auth.Principal
+import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTCredential
 import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.http.auth.HttpAuthHeader
+import io.ktor.http.auth.*
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.util.*
@@ -23,7 +23,17 @@ class JwtUtil {
         fun useJwtFromCookie(call: ApplicationCall): HttpAuthHeader? {
             return try {
                 val token = call.request.cookies["ID_token"]
-                io.ktor.http.auth.parseAuthorizationHeader("Bearer $token")
+                parseAuthorizationHeader("Bearer $token")
+            } catch (ex: Throwable) {
+                log.error("Illegal HTTP auth header", ex)
+                null
+            }
+        }
+
+        fun useAzureJwtFromCookie(call: ApplicationCall): HttpAuthHeader? {
+            return try {
+                val token = call.request.cookies["isso-idtoken"]
+                parseAuthorizationHeader("Bearer $token")
             } catch (ex: Throwable) {
                 log.error("Illegal HTTP auth header", ex)
                 null
@@ -34,6 +44,7 @@ class JwtUtil {
             return try {
                 useJwtFromCookie(call)
                         ?.getBlob()
+                        ?.let { blob -> JWT.decode(blob).parsePayload().getClaim("NAVident").asString() }
                         ?.let { blob -> JWT.decode(blob).parsePayload().subject }
                         ?: "Unauthenticated"
             } catch (e: Throwable) {
@@ -47,12 +58,15 @@ class JwtUtil {
                         .rateLimited(10, 1, TimeUnit.MINUTES)
                         .build()
 
-        fun validateJWT(credentials: JWTCredential): Principal? {
+        fun validateJWT(credentials: JWTCredential, clientId: String?): Principal? {
             return try {
                 requireNotNull(credentials.payload.audience) { "Audience not present" }
+                if (clientId != null && clientId.isNotEmpty()) {
+                    require(credentials.payload.audience.contains(clientId))
+                }
                 JWTPrincipal(credentials.payload)
             } catch (e: Exception) {
-                log.error("Failed to validateJWT token", e)
+                log.error("Failed to validateJWT token" + e.message, e)
                 null
             }
         }
