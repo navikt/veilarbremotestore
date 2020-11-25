@@ -18,7 +18,6 @@ import io.prometheus.client.dropwizard.DropwizardExports
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.pto.veilarbremotestore.routes.getNavident
 import no.nav.pto.veilarbremotestore.routes.internalRoutes
-import no.nav.pto.veilarbremotestore.routes.naisRoutes
 import no.nav.pto.veilarbremotestore.routes.veilarbstoreRoutes
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.event.Level
