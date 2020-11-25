@@ -40,16 +40,13 @@ class JwtUtil {
             }
         }
 
-        fun getSubject(call: ApplicationCall): String {
-            return try {
-                useJwtFromCookie(call)
-                        ?.getBlob()
-                        ?.let { blob -> JWT.decode(blob).parsePayload().getClaim("NAVident").asString() }
-                        ?.let { blob -> JWT.decode(blob).parsePayload().subject }
-                        ?: "Unauthenticated"
-            } catch (e: Throwable) {
-                "JWT not found"
+        fun getSubject(call: ApplicationCall): String? {
+            if (call.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
+                return call.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
             }
+            return call.principal<JWTPrincipal>()
+                ?.payload
+                ?.subject
         }
 
         fun makeJwkProvider(jwksUrl: String): JwkProvider =
