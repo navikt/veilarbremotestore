@@ -23,11 +23,13 @@ import no.nav.pto.veilarbremotestore.routes.veilarbstoreRoutes
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.event.Level
 
-fun createHttpServer(applicationState: ApplicationState,
-                     provider: StorageProvider,
-                     port: Int = 7070,
-                     configuration: Configuration,
-                     useAuthentication: Boolean = true): ApplicationEngine = embeddedServer(Netty, port) {
+fun createHttpServer(
+    applicationState: ApplicationState,
+    provider: StorageProvider,
+    port: Int = 7070,
+    configuration: Configuration,
+    useAuthentication: Boolean = true
+): ApplicationEngine = embeddedServer(Netty, port) {
 
     install(StatusPages) {
         notFoundHandler()
@@ -43,24 +45,24 @@ fun createHttpServer(applicationState: ApplicationState,
         allowCredentials = true
     }
 
-    if (useAuthentication) {
-        install(Authentication) {
-            jwt("AzureAD") {
-                skipWhen { applicationCall -> applicationCall.request.cookies["isso-idtoken"] == null }
-                realm = "veilarbremotestore"
-                authHeader(JwtUtil.Companion::useAzureJwtFromCookie)
-                verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
-                validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
-            }
-            jwt("OpenAM") {
-                skipWhen { applicationCall -> applicationCall.request.cookies["ID_token"] == null }
-                realm = "veilarbremotestore"
-                authHeader(JwtUtil.Companion::useJwtFromCookie)
-                verifier(configuration.issoJwksUrl, configuration.issoJwtIssuer)
-                validate { JwtUtil.validateJWT(it, null) }
-            }
+
+    install(Authentication) {
+        jwt("AzureAD") {
+            skipWhen { applicationCall -> applicationCall.request.cookies["isso-idtoken"] == null }
+            realm = "veilarbremotestore"
+            authHeader(JwtUtil.Companion::useAzureJwtFromCookie)
+            verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
+            validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
+        }
+        jwt("OpenAM") {
+            skipWhen { applicationCall -> applicationCall.request.cookies["ID_token"] == null }
+            realm = "veilarbremotestore"
+            authHeader(JwtUtil.Companion::useJwtFromCookie)
+            verifier(configuration.issoJwksUrl, configuration.issoJwtIssuer)
+            validate { JwtUtil.validateJWT(it, null) }
         }
     }
+
 
     install(ContentNegotiation) {
         register(ContentType.Application.Json, JacksonConverter(objectMapper))

@@ -17,7 +17,7 @@ private val defaultProperties = ConfigurationMap(
                 "NAMESPACE" to "q",
                 "AZUREAD_JWKS_URL" to "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys",
                 "AZUREAD_ISSUER" to "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0",
-                "VEILARBLOGIN_AAD_CLIENT_ID" to notUsedLocally
+                "VEILARBLOGIN_AAD_CLIENT_ID" to "2edd96a2-fb5a-4dfa-8f36-848ae306f9b1"
         )
 )
 

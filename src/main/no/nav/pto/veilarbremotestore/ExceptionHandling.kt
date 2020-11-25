@@ -7,6 +7,7 @@ import io.ktor.features.origin
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.ApplicationRequest
 import io.ktor.response.respond
+import org.apache.http.auth.AuthenticationException
 import org.slf4j.LoggerFactory
 
 private val log = LoggerFactory.getLogger("veilarbremotestore.ExceptionHandler")
@@ -22,6 +23,11 @@ fun StatusPages.Configuration.exceptionHandler() {
         }
     }
 
+    exception<AuthenticationException> { cause ->
+        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
+            cause.message ?: "Unauthorized."
+        }
+    }
 }
 
 fun StatusPages.Configuration.notFoundHandler() {

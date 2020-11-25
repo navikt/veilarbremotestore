@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
@@ -14,6 +15,10 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
         return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
+    route.insertPhaseAfter(ApplicationCallPipeline.Features, Authentication.AuthenticatePhase)
+    route.intercept(Authentication.AuthenticatePhase) {
+        this.context.authentication.principal = JWTPrincipal(MockPayload("Z999999"))
+    }
     route.build()
     return route
 }
