@@ -100,11 +100,16 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 }
 
 fun ApplicationCall.getNavident(): String? {
-    if (this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
-        return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
+    try {
+        if (this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
+            return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
+        }
+        return this.principal<JWTPrincipal>()
+            ?.payload
+            ?.subject
     }
-    return this.principal<JWTPrincipal>()
-        ?.payload
-        ?.subject
+    catch (e:Exception){
+        return null
+    }
 }
 

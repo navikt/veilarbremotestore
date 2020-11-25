@@ -70,8 +70,8 @@ fun createHttpServer(
 
     install(CallLogging) {
         level = Level.INFO
-        filter { call -> call.request.path().startsWith("/veilarbremotestore") }
-        mdc("userId", { applicationCall -> applicationCall.getNavident() })
+        filter { call -> !call.request.path().contains("/veilarbremotestore/internal")}
+        mdc("userId") { applicationCall -> applicationCall.getNavident() }
     }
 
     install(DropwizardMetrics) {
@@ -80,8 +80,7 @@ fun createHttpServer(
 
     routing {
         route("veilarbremotestore") {
-            naisRoutes(readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
-            internalRoutes(provider)
+            internalRoutes(provider, readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
             veilarbstoreRoutes(provider, useAuthentication)
         }
     }
