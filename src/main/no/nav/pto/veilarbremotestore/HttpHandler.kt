@@ -15,6 +15,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.dropwizard.DropwizardExports
+import no.nav.pto.veilarbremotestore.JwtUtil.Companion.useJwtFromCookie
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.pto.veilarbremotestore.routes.getNavident
 import no.nav.pto.veilarbremotestore.routes.internalRoutes
@@ -49,14 +50,24 @@ fun createHttpServer(
         jwt("AzureAD") {
             skipWhen { applicationCall -> applicationCall.request.cookies["isso-idtoken"] == null }
             realm = "veilarbremotestore"
-            authHeader(JwtUtil.Companion::useAzureJwtFromCookie)
+            authHeader { applicationCall ->
+                useJwtFromCookie(
+                        applicationCall,
+                        AuthCookies.AZURE_AD.cookieName
+                )
+            }
             verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
             validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
         }
         jwt("OpenAM") {
             skipWhen { applicationCall -> applicationCall.request.cookies["ID_token"] == null }
             realm = "veilarbremotestore"
-            authHeader(JwtUtil.Companion::useJwtFromCookie)
+            authHeader { applicationCall ->
+                useJwtFromCookie(
+                        applicationCall,
+                        AuthCookies.OPEN_AM.cookieName
+                )
+            }
             verifier(configuration.issoJwksUrl, configuration.issoJwtIssuer)
             validate { JwtUtil.validateJWT(it, null) }
         }

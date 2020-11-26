@@ -21,19 +21,9 @@ private val log = LoggerFactory.getLogger("veilarbremotestore.JwtConfig")
 
 class JwtUtil {
     companion object {
-        fun useJwtFromCookie(call: ApplicationCall): HttpAuthHeader? {
+        fun useJwtFromCookie(call: ApplicationCall, cookieName: String): HttpAuthHeader? {
             return try {
-                val token = call.request.cookies["ID_token"]
-                parseAuthorizationHeader("Bearer $token")
-            } catch (ex: Throwable) {
-                log.error("Illegal HTTP auth header", ex)
-                null
-            }
-        }
-
-        fun useAzureJwtFromCookie(call: ApplicationCall): HttpAuthHeader? {
-            return try {
-                val token = call.request.cookies["isso-idtoken"]
+                val token = call.request.cookies[cookieName]
                 parseAuthorizationHeader("Bearer $token")
             } catch (ex: Throwable) {
                 log.error("Illegal HTTP auth header", ex)
