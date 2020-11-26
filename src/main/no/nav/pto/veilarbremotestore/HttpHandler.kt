@@ -69,7 +69,7 @@ fun createHttpServer(
 
     install(CallLogging) {
         level = Level.INFO
-        filter { call -> !call.request.path().contains("/veilarbremotestore/internal")}
+        filter { call -> !call.request.path().contains("/internal")}
         mdc("userId") { applicationCall -> applicationCall.getNavident() }
     }
 
