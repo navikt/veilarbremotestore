@@ -48,7 +48,6 @@ class JwtUtil {
                 }
                 log.info("3")
                 JWTPrincipal(credentials.payload)
-                log.info("4")
             } catch (e: Exception) {
                 log.error("Failed to validateJWT token" + e.message, e)
                 null
