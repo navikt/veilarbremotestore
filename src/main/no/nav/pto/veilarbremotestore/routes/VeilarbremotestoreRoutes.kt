@@ -106,7 +106,7 @@ fun ApplicationCall.getNavident(): String? {
     if (this.principal<JWTPrincipal>()?.payload == null){
         log.info("No payload")
     }
-    if (this.principal<JWTPrincipal>()?.payload.claims == null){
+    if (this.principal<JWTPrincipal>()?.payload?.claims == null){
         log.info("No claims")
     }
     if (this.principal<JWTPrincipal>()?.payload != null &&
