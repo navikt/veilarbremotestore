@@ -5,7 +5,7 @@ import io.ktor.auth.*
 import io.ktor.auth.jwt.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
-import io.ktor.response.respond
+import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.pto.veilarbremotestore.JwtUtil.Companion.getSubject
 import no.nav.pto.veilarbremotestore.MockPayload
@@ -31,7 +31,13 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/") {
         conditionalAuthenticate(useAuthentication) {
-            get {
+            get("test") {
+                log.info("aaaaaa")
+                val test123 = getSubject(call)
+                log.info("test123", test123)
+                call.respondText { "123" }
+            }
+            get("") {
                 log.info("aaaaaa")
                 val test123 = getSubject(call)
                 log.info("test123", test123)
