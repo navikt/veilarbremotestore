@@ -80,7 +80,7 @@ fun createHttpServer(
     install(CallLogging) {
         level = Level.INFO
         filter { call -> !call.request.path().contains("/internal")}
-        mdc("userId") { applicationCall -> applicationCall.getNavident() }
+        //mdc("userId") { applicationCall -> applicationCall.getNavident() }
     }
 
     install(DropwizardMetrics) {

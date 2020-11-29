@@ -24,6 +24,7 @@ fun StatusPages.Configuration.exceptionHandler() {
     }
 
     exception<AuthenticationException> { cause ->
+        log.info("OLALALAL", cause)
         call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
             cause.message ?: "Unauthorized."
         }
