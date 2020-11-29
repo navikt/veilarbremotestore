@@ -9,6 +9,9 @@ import io.ktor.response.respond
 import io.ktor.routing.*
 import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
+import org.slf4j.LoggerFactory
+
+private val log = LoggerFactory.getLogger("veilarbremotestore.veilarbstoreRoutes")
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
     if (useAuthentication) {
@@ -102,9 +105,14 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 fun ApplicationCall.getNavident(): String? {
     val navIdent = this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")
 
+    log.info("Getting nav ident")
+
     if (navIdent != null && !navIdent.isNull) {
+        log.info("nav ident length: ${navIdent.asString().length}")
         return navIdent.asString()
     }
+
+    log.info("getting nav ident from payload or subject")
     return this.principal<JWTPrincipal>()
         ?.payload
         ?.subject
