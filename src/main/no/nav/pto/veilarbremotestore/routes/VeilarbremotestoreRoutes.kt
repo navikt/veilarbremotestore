@@ -103,12 +103,6 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 }
 
 fun ApplicationCall.getNavident(): String? {
-    if (this.principal<JWTPrincipal>()?.payload == null){
-        log.info("No payload")
-    }
-    if (this.principal<JWTPrincipal>()?.payload?.claims == null){
-        log.info("No claims")
-    }
     if (this.principal<JWTPrincipal>()?.payload != null &&
             this.principal<JWTPrincipal>()?.payload?.claims != null &&
             this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {

@@ -56,7 +56,7 @@ fun createHttpServer(
                         AuthCookies.AZURE_AD.cookieName
                 )
             }
-            log.info(configuration.azureAdJwtIssuer, configuration.azureAdJwksUrl, configuration.azureAdClientId)
+            log.info("configuration", configuration.azureAdJwtIssuer, configuration.azureAdJwksUrl, configuration.azureAdClientId)
             verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
             validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
         }
