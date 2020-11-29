@@ -48,7 +48,9 @@ fun createHttpServer(
 
     install(Authentication) {
         jwt("AzureAD") {
+            log.info("azure ad")
             skipWhen { applicationCall -> applicationCall.request.cookies[AuthCookies.AZURE_AD.cookieName] == null }
+            log.info("azure ad 1")
             realm = "veilarbremotestore"
             authHeader { applicationCall ->
                 useJwtFromCookie(
