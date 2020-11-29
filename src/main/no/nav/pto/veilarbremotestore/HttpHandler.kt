@@ -77,11 +77,11 @@ fun createHttpServer(
         register(ContentType.Application.Json, JacksonConverter(objectMapper))
     }
 
-    install(CallLogging) {
+    /*install(CallLogging) {
         level = Level.INFO
         filter { call -> !call.request.path().contains("/internal")}
         //mdc("userId") { applicationCall -> applicationCall.getNavident() }
-    }
+    }*/
 
     install(DropwizardMetrics) {
         CollectorRegistry.defaultRegistry.register(DropwizardExports(registry))
@@ -89,8 +89,8 @@ fun createHttpServer(
 
     routing {
         route("veilarbremotestore") {
-            internalRoutes(provider, readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
             veilarbstoreRoutes(provider, useAuthentication)
+            internalRoutes(provider, readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
         }
     }
 

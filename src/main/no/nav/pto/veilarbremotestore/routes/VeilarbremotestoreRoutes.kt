@@ -32,6 +32,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
     route("/") {
         conditionalAuthenticate(useAuthentication) {
             get {
+                log.info("aaaaaa")
                 val test123 = getSubject(call)
                 log.info("test123", test123)
                 val ident = call.getNavident()
