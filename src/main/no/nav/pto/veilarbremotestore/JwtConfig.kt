@@ -52,6 +52,12 @@ class JwtUtil {
 
         fun getSubject(call: ApplicationCall): String? {
             return try {
+                log.info("get subject")
+                val blob1 = useJwtFromCookie(call, AuthCookies.AZURE_AD.cookieName)
+                        ?.getBlob()
+                log.info(blob1)
+                log.info(JWT.decode(blob1).toString())
+                log.info(JWT.decode(blob1).parsePayload().claims.keys.toString())
                 useJwtFromCookie(call, AuthCookies.AZURE_AD.cookieName)
                         ?.getBlob()
                         ?.let { blob -> JWT.decode(blob).parsePayload().getClaim("NAVident").asString() }
