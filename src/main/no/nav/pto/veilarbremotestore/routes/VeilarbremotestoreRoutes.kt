@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+import no.nav.pto.veilarbremotestore.JwtUtil.Companion.getSubject
 import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.LoggerFactory
@@ -32,9 +33,9 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
         conditionalAuthenticate(useAuthentication) {
             get {
                 val ident = call.getNavident()
-                log.info("ident" + ident)
+                val test123 = getSubject(call)
+                log.info("test123", test123)
                 ident?.let { navIdent ->
-                    log.info("inside")
                     provider.hentVeilederObjekt(navIdent)
                             ?.let { veilederFelter ->
                                 val q = call.request.queryParameters
@@ -103,6 +104,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
         }
     }
 }
+
 
 fun ApplicationCall.getNavident(): String? {
     if (this.principal<JWTPrincipal>()?.payload != null &&
