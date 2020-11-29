@@ -34,21 +34,21 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                 val ident = call.getNavident()
                 ident?.let { navIdent ->
                     provider.hentVeilederObjekt(navIdent)
-                        ?.let { veilederFelter ->
-                            val q = call.request.queryParameters
-                            q["ressurs"]
-                                ?.split(",")
-                                ?.map { it.trim() }
-                                ?.let { queryKeys ->
-                                    call.respond(veilederFelter.filter { felt -> felt.key in queryKeys })
-                                }
-                                ?: if (q.isEmpty()) {
-                                    call.respond(veilederFelter)
-                                } else {
-                                    call.respond(HttpStatusCode.BadRequest)
-                                }
-                        }
-                        ?: call.respond(HttpStatusCode.NoContent)
+                            ?.let { veilederFelter ->
+                                val q = call.request.queryParameters
+                                q["ressurs"]
+                                        ?.split(",")
+                                        ?.map { it.trim() }
+                                        ?.let { queryKeys ->
+                                            call.respond(veilederFelter.filter { felt -> felt.key in queryKeys })
+                                        }
+                                        ?: if (q.isEmpty()) {
+                                            call.respond(veilederFelter)
+                                        } else {
+                                            call.respond(HttpStatusCode.BadRequest)
+                                        }
+                            }
+                            ?: call.respond(HttpStatusCode.NoContent)
                 }
             }
 
@@ -78,24 +78,24 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                 val ident = call.getNavident()
                 ident?.let {
                     provider.hentVeilederObjekt(ident)
-                        ?.let { veilederFelter ->
-                            val q = call.request.queryParameters
-                            q["ressurs"]
-                                ?.split(",")
-                                ?.map { it.trim() }
-                                ?.let { queryKeys ->
-                                    val toBeDeleted = veilederFelter.filter { felt -> felt.key in queryKeys }
-                                    provider.slettVeilederFelter(toBeDeleted, ident)
-                                    call.respond(HttpStatusCode.OK, "Deleted ${queryKeys} on $ident")
-                                }
-                                ?: if (q.isEmpty()) {
-                                    provider.slettVeilederObjekt(ident)
-                                    call.respond(HttpStatusCode.OK, "Deleted $ident")
-                                } else {
-                                    call.respond(HttpStatusCode.BadRequest)
-                                }
-                        }
-                        ?: call.respond(HttpStatusCode.NoContent)
+                            ?.let { veilederFelter ->
+                                val q = call.request.queryParameters
+                                q["ressurs"]
+                                        ?.split(",")
+                                        ?.map { it.trim() }
+                                        ?.let { queryKeys ->
+                                            val toBeDeleted = veilederFelter.filter { felt -> felt.key in queryKeys }
+                                            provider.slettVeilederFelter(toBeDeleted, ident)
+                                            call.respond(HttpStatusCode.OK, "Deleted ${queryKeys} on $ident")
+                                        }
+                                        ?: if (q.isEmpty()) {
+                                            provider.slettVeilederObjekt(ident)
+                                            call.respond(HttpStatusCode.OK, "Deleted $ident")
+                                        } else {
+                                            call.respond(HttpStatusCode.BadRequest)
+                                        }
+                            }
+                            ?: call.respond(HttpStatusCode.NoContent)
                 }
             }
         }
@@ -103,7 +103,9 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
 }
 
 fun ApplicationCall.getNavident(): String? {
-    if (this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
+    if (this.principal<JWTPrincipal>()?.payload != null &&
+            this.principal<JWTPrincipal>()?.payload?.claims != null &&
+            this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
         log.info("NAV IDENT")
         return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
     }
