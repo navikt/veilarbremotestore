@@ -15,7 +15,6 @@ private val log = LoggerFactory.getLogger("veilarbremotestore.veilarbstoreRoutes
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
     if (useAuthentication) {
-        log.info("use authentication", useAuthentication)
         return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
