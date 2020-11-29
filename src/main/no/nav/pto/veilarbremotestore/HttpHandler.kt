@@ -48,9 +48,7 @@ fun createHttpServer(
 
     install(Authentication) {
         jwt("AzureAD") {
-            log.info("azure ad")
             skipWhen { applicationCall -> applicationCall.request.cookies[AuthCookies.AZURE_AD.cookieName] == null }
-            log.info("azure ad 1")
             realm = "veilarbremotestore"
             authHeader { applicationCall ->
                 useJwtFromCookie(
@@ -58,8 +56,7 @@ fun createHttpServer(
                         AuthCookies.AZURE_AD.cookieName
                 )
             }
-            log.info("configuration" + configuration.azureAdJwtIssuer + configuration.azureAdJwksUrl + configuration.azureAdClientId)
-            verifier(configuration.azureAdJwksUrl, configuration.azureAdJwtIssuer)
+            verifier(configuration.azureAdJwksUrl)
             validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
         }
         jwt("OpenAM") {
@@ -75,7 +72,6 @@ fun createHttpServer(
             validate { JwtUtil.validateJWT(it, null) }
         }
     }
-
 
     install(ContentNegotiation) {
         register(ContentType.Application.Json, JacksonConverter(objectMapper))

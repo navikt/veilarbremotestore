@@ -15,9 +15,8 @@ private val defaultProperties = ConfigurationMap(
                 "ISSO_JWKS_URL" to "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri",
                 "ISSO_ISSUER" to "https://isso-q.adeo.no:443/isso/oauth2",
                 "NAMESPACE" to "q",
-                "AZUREAD_JWKS_URL" to "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys",
-                "AZUREAD_ISSUER" to "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0",
-                "VEILARBLOGIN_AAD_CLIENT_ID" to "2edd96a2-fb5a-4dfa-8f36-848ae306f9b1"
+                "AZUREAD_ISSUER" to notUsedLocally,
+                "AZUREAD_JWKS_URL" to notUsedLocally
         )
 )
 
