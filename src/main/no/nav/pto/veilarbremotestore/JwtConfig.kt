@@ -17,13 +17,14 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-private val log = LoggerFactory.getLogger("veilarbremotestore.JwtConfig")
+private val log = LoggerFactory.getLogger("veilarbremotestore.JwtUtil")
 
 class JwtUtil {
     companion object {
         fun useJwtFromCookie(call: ApplicationCall, cookieName: String): HttpAuthHeader? {
             return try {
                 val token = call.request.cookies[cookieName]
+                log.info("Token length: ${token.length}")
                 parseAuthorizationHeader("Bearer $token")
             } catch (ex: Throwable) {
                 log.error("Illegal HTTP auth header", ex)
