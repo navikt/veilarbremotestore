@@ -39,13 +39,11 @@ class JwtUtil {
 
         fun validateJWT(credentials: JWTCredential, clientId: String?): Principal? {
             return try {
-                log.info("checking audience")
                 requireNotNull(credentials.payload.audience) { "Audience not present" }
                 if (clientId != null && clientId.isNotEmpty()) {
                     log.info("checking client ids")
                     require(credentials.payload.audience.contains(clientId))
                 }
-                log.info("making payload")
                 JWTPrincipal(credentials.payload)
             } catch (e: Exception) {
                 log.error("Failed to validateJWT token" + e.message, e)
