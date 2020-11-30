@@ -88,11 +88,11 @@ fun createHttpServer(
     }
 
     routing {
+        trace { application.log.trace(it.buildText()) }
         route("veilarbremotestore") {
             veilarbstoreRoutes(provider, useAuthentication)
             internalRoutes(provider, readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
         }
-        trace { application.log.trace(it.buildText()) }
     }
 
     applicationState.initialized = true
