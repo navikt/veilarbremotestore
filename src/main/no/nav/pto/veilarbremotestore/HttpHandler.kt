@@ -1,7 +1,7 @@
 package no.nav.pto.veilarbremotestore
 
 import io.ktor.application.*
-import io.ktor.auth.Authentication
+import io.ktor.auth.*
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.*
 import io.ktor.http.ContentType
