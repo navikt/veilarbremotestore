@@ -32,6 +32,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
         conditionalAuthenticate(useAuthentication) {
             get("") {
                 val ident = call.getNavident()
+                log.info("nav ident: "+ident)
                 ident?.let { navIdent ->
                     provider.hentVeilederObjekt(navIdent)
                             ?.let { veilederFelter ->
