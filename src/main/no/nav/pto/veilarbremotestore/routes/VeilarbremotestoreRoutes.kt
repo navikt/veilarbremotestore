@@ -32,8 +32,12 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/") {
-        intercept(ApplicationCallPipeline.Features) {
-            log.info("intercept")
+        intercept(ApplicationCallPipeline.Fallback) {
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
+            }
+        }
+        intercept(ApplicationCallPipeline.Call) {
             this.context.authentication.allErrors.forEach{ error->
                 log.info(error.message)
             }
