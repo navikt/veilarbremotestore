@@ -18,7 +18,13 @@ private val log = LoggerFactory.getLogger("veilarbremotestore.veilarbstoreRoutes
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
     if (useAuthentication) {
-        return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
+        val authenticate = authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
+        authenticate.intercept(Authentication.AuthenticatePhase){
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
+            }
+        }
+        return authenticate
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
     route.insertPhaseAfter(ApplicationCallPipeline.Features, Authentication.AuthenticatePhase)
@@ -100,11 +106,6 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                             }
                             ?: call.respond(HttpStatusCode.NoContent)
                 }
-            }
-        }
-        intercept(Authentication.AuthenticatePhase) {
-            this.context.authentication.allErrors.forEach{ error->
-                log.info(error.message)
             }
         }
     }
