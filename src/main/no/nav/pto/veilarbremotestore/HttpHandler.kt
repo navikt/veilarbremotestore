@@ -70,6 +70,7 @@ fun createHttpServer(
             verifier(configuration.issoJwksUrl, configuration.issoJwtIssuer)
             validate { JwtUtil.validateJWT(it, null) }
         }
+
     }
 
     install(ContentNegotiation) {

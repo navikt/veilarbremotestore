@@ -18,7 +18,7 @@ private val log = LoggerFactory.getLogger("veilarbremotestore.veilarbstoreRoutes
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
     if (useAuthentication) {
-        return authenticate(build = build, configurations = arrayOf("AzureAD"))
+        return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
     route.insertPhaseAfter(ApplicationCallPipeline.Features, Authentication.AuthenticatePhase)
@@ -100,6 +100,11 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                             }
                             ?: call.respond(HttpStatusCode.NoContent)
                 }
+            }
+        }
+        handle {
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
             }
         }
     }
