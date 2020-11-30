@@ -58,7 +58,6 @@ fun createHttpServer(
             }
 
             verifier(configuration.azureAdJwksUrl)
-            log.info("azure client length: "+configuration.azureAdClientId.length.toString())
             validate { JwtUtil.validateJWT(it, configuration.azureAdClientId) }
         }
         jwt("OpenAM") {
