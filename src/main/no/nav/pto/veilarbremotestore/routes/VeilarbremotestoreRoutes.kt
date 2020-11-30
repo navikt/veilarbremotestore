@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.*
 import io.ktor.routing.*
+import no.nav.pto.veilarbremotestore.AuthCookies
 import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.LoggerFactory
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory
 private val log = LoggerFactory.getLogger("veilarbremotestore.veilarbstoreRoutes")
 
 fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() -> Unit): Route {
-    if (useAuthentication) {
-        return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
-    }
+    //if (useAuthentication) {
+        //return authenticate(build = build, configurations = arrayOf("AzureAD", "OpenAM"))
+    //}
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
     route.insertPhaseAfter(ApplicationCallPipeline.Features, Authentication.AuthenticatePhase)
     route.intercept(Authentication.AuthenticatePhase) {
@@ -31,8 +32,10 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
     route("/") {
         conditionalAuthenticate(useAuthentication) {
             get("") {
+                log.info("cookie"+call.request.cookies[AuthCookies.AZURE_AD.cookieName])
                 val ident = call.getNavident()
                 log.info("nav ident: "+ident)
+
                 ident?.let { navIdent ->
                     provider.hentVeilederObjekt(navIdent)
                             ?.let { veilederFelter ->
