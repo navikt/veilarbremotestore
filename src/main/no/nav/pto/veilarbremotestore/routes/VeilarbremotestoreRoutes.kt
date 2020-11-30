@@ -24,6 +24,21 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
                 log.info(error.message)
             }
         }
+        authenticate.intercept(Authentication.ChallengePhase){
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
+            }
+        }
+        authenticate.intercept(ApplicationCallPipeline.Monitoring){
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
+            }
+        }
+        authenticate.intercept(ApplicationCallPipeline.Fallback){
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
+            }
+        }
         return authenticate
     }
     val route = createChild(AuthenticationRouteSelector(listOf<String?>(null)))
