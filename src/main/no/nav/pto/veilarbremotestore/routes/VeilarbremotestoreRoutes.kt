@@ -31,8 +31,7 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/") {
         conditionalAuthenticate(useAuthentication) {
-            get("") {
-                log.info("cookie"+call.request.cookies[AuthCookies.AZURE_AD.cookieName])
+            get {
                 val ident = call.getNavident()
                 log.info("nav ident: "+ident)
 
