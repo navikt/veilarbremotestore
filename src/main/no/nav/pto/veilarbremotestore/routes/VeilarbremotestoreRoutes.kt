@@ -31,7 +31,8 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/") {
         conditionalAuthenticate(useAuthentication) {
-            get("ressurs={ressurs}") {
+            get("/ressurs/{ressurs}") {
+                log.info("test")
                 val ident = call.getNavident()
                 log.info("nav ident: "+ident)
 
