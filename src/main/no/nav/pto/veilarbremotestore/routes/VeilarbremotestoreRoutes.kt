@@ -32,12 +32,6 @@ fun Route.conditionalAuthenticate(useAuthentication: Boolean, build: Route.() ->
 
 fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boolean) {
     route("/") {
-        intercept(Authentication.AuthenticatePhase) {
-            this.context.authentication.allErrors.forEach{ error->
-                log.info(error.message)
-            }
-        }
-
         conditionalAuthenticate(useAuthentication) {
             get("") {
                 val ident = call.getNavident()
@@ -106,6 +100,11 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                             }
                             ?: call.respond(HttpStatusCode.NoContent)
                 }
+            }
+        }
+        intercept(Authentication.AuthenticatePhase) {
+            this.context.authentication.allErrors.forEach{ error->
+                log.info(error.message)
             }
         }
     }
