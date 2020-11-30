@@ -39,31 +39,17 @@ class JwtUtil {
 
         fun validateJWT(credentials: JWTCredential, clientId: String?): Principal? {
             return try {
+                log.info("checking audience")
                 requireNotNull(credentials.payload.audience) { "Audience not present" }
                 if (clientId != null && clientId.isNotEmpty()) {
+                    log.info("checking client ids")
                     require(credentials.payload.audience.contains(clientId))
                 }
+                log.info("making payload")
                 JWTPrincipal(credentials.payload)
             } catch (e: Exception) {
                 log.error("Failed to validateJWT token" + e.message, e)
                 null
-            }
-        }
-
-        fun getSubject(call: ApplicationCall): String? {
-            return try {
-                log.info("get subject")
-                val blob1 = useJwtFromCookie(call, AuthCookies.AZURE_AD.cookieName)
-                        ?.getBlob()
-                log.info(blob1)
-                log.info(JWT.decode(blob1).toString())
-                log.info(JWT.decode(blob1).parsePayload().claims.keys.toString())
-                useJwtFromCookie(call, AuthCookies.AZURE_AD.cookieName)
-                        ?.getBlob()
-                        ?.let { blob -> JWT.decode(blob).parsePayload().getClaim("NAVident").asString() }
-                        ?.let { blob -> JWT.decode(blob).parsePayload().subject }
-            } catch (e: Throwable) {
-                "JWT not found"
             }
         }
 

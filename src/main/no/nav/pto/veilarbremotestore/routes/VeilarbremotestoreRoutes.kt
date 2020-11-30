@@ -7,7 +7,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.*
 import io.ktor.routing.*
-import no.nav.pto.veilarbremotestore.JwtUtil.Companion.getSubject
 import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.LoggerFactory
