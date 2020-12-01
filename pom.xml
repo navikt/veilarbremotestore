@@ -20,7 +20,7 @@
         <prometheus.version>0.4.0</prometheus.version>
         <logstash.version>5.1</logstash.version>
         <jacksonkotlin.version>2.9.7</jacksonkotlin.version>
-        <commonutils.version>1.2019.12.19-16.43-8b0fbaf35e9b</commonutils.version>
+        <common.version>2.2020.10.13_14.48-80e4c2dc5856</common.version>
         <main.class>io.ktor.server.netty.EngineMain</main.class>
         <httpcomponents.httpclient.version>4.5.9</httpcomponents.httpclient.version>
     </properties>
@@ -155,13 +155,13 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>util</artifactId>
-            <version>${commonutils.version}</version>
+            <version>${common.version}</version>
         </dependency>
 
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>log</artifactId>
-            <version>${commonutils.version}</version>
+            <version>${common.version}</version>
         </dependency>
 
         <dependency>
