@@ -24,7 +24,7 @@ class JwtUtil {
         fun useJwtFromCookie(call: ApplicationCall, cookieName: String): HttpAuthHeader? {
             return try {
                 val token = call.request.cookies[cookieName]
-                parseAuthorizationHeader("Bearer $token realm=veilarbremotestore")
+                parseAuthorizationHeader("Bearer realm=veilarbremotestore")
             } catch (ex: Throwable) {
                 log.error("Illegal HTTP auth header", ex)
                 null
