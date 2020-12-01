@@ -165,6 +165,12 @@
         </dependency>
 
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>types</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.11.699</version>
