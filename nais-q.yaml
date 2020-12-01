@@ -38,6 +38,9 @@ spec:
     path: /veilarbremotestore/internal/metrics
   vault:
     enabled: true
+    paths:
+      - kvPath: serviceuser/data/prod/srvveilarbfilter
+        mountPath: /var/run/secrets/nais.io/service_user
   envFrom:
     - configmap: pto-config
   env:
