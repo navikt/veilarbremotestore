@@ -22,7 +22,6 @@
         <jacksonkotlin.version>2.9.7</jacksonkotlin.version>
         <common.version>2.2020.10.13_14.48-80e4c2dc5856</common.version>
         <main.class>io.ktor.server.netty.EngineMain</main.class>
-        <httpcomponents.httpclient.version>4.5.9</httpcomponents.httpclient.version>
     </properties>
 
     <repositories>
@@ -173,7 +172,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.699</version>
+            <version>1.11.908</version>
         </dependency>
 
         <!-- test -->
