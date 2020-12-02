@@ -116,7 +116,6 @@ fun ApplicationCall.getNavident(): String? {
     if (this.principal<JWTPrincipal>()?.payload != null &&
             this.principal<JWTPrincipal>()?.payload?.claims != null &&
             this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
-        log.info("NAV IDENT")
         return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
     }
     return this.principal<JWTPrincipal>()

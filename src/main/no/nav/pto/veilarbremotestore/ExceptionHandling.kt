@@ -13,6 +13,17 @@ import org.slf4j.LoggerFactory
 private val log = LoggerFactory.getLogger("veilarbremotestore.ExceptionHandler")
 
 fun StatusPages.Configuration.exceptionHandler() {
+    exception<AuthenticationException> { cause ->
+        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
+            cause.message ?: "Unauthorized 123."
+        }
+    }
+
+    exception<AuthenticationException> { cause ->
+        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
+            cause.message ?: "Unauthorized 123."
+        }
+    }
     exception<Throwable> { cause ->
         call.logErrorAndRespond(cause) { "An internal error occurred during routing" }
     }
@@ -20,18 +31,6 @@ fun StatusPages.Configuration.exceptionHandler() {
     exception<IllegalArgumentException> { cause ->
         call.logErrorAndRespond(cause, HttpStatusCode.BadRequest) {
             "The request was either invalid or lacked required parameters."
-        }
-    }
-
-    exception<AuthenticationException> { cause ->
-        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
-            cause.message ?: "Unauthorized."
-        }
-    }
-
-    exception<AuthenticationException> { cause ->
-        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
-            cause.message ?: "Unauthorized."
         }
     }
 }
