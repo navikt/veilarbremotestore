@@ -39,6 +39,8 @@ spec:
     path: /veilarbremotestore/internal/metrics
   vault:
     enabled: true
+  envFrom:
+    - configmap: pto-config
   env:
     - name: S3_URL
       value: objectstore.nais.adeo.no
