@@ -52,7 +52,5 @@ spec:
       value: https://isso-q.adeo.no:443/isso/oauth2
     - name: NAMESPACE
       value: {{namespace}}
-    - name: AZUREAD_ISSUER
-      value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
     - name: AZUREAD_JWKS_URL
       value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys

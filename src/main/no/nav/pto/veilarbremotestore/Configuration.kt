@@ -15,7 +15,6 @@ private val defaultProperties = ConfigurationMap(
                 "ISSO_JWKS_URL" to "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri",
                 "ISSO_ISSUER" to "https://isso-q.adeo.no:443/isso/oauth2",
                 "NAMESPACE" to "q",
-                "AZUREAD_ISSUER" to notUsedLocally,
                 "AZUREAD_JWKS_URL" to notUsedLocally
         )
 )
