@@ -7,11 +7,25 @@ import io.ktor.features.origin
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.ApplicationRequest
 import io.ktor.response.respond
+import org.apache.http.auth.AuthenticationException
+import org.json.simple.JSONObject
 import org.slf4j.LoggerFactory
 
 private val log = LoggerFactory.getLogger("veilarbremotestore.ExceptionHandler")
 
 fun StatusPages.Configuration.exceptionHandler() {
+    exception<AuthenticationException> { cause ->
+        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
+            cause.message ?: "Unauthorized."
+        }
+    }
+
+    exception<AuthenticationException> { cause ->
+        call.logErrorAndRespond(cause, HttpStatusCode.Unauthorized) {
+            cause.message ?: "Unauthorized."
+        }
+    }
+
     exception<Throwable> { cause ->
         call.logErrorAndRespond(cause) { "An internal error occurred during routing" }
     }
@@ -21,7 +35,6 @@ fun StatusPages.Configuration.exceptionHandler() {
             "The request was either invalid or lacked required parameters."
         }
     }
-
 }
 
 fun StatusPages.Configuration.notFoundHandler() {

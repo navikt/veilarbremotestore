@@ -10,13 +10,13 @@ spec:
   image: docker.pkg.github.com/navikt/veilarbremotestore/veilarbremotestore:{{version}}
   port: 7070
   liveness:
-    path: /veilarbremotestore/isAlive
+    path: /veilarbremotestore/internal/isAlive
     initialDelay: 20
     timeout: 1
     periodSeconds: 5
     failureThreshold: 10
   readiness:
-    path: /veilarbremotestore/isReady
+    path: /veilarbremotestore/internal/isReady
     initialDelay: 20
     timeout: 1
   resources:
@@ -29,15 +29,18 @@ spec:
   ingresses:
     - https://veilarbremotestore.nais.preprod.local
     - https://app-{{namespace}}.adeo.no/veilarbremotestore
+  webproxy: true
   replicas:
     min: 1
     max: 2
     cpuThresholdPercentage: 90
   prometheus:
     enabled: true
-    path: /veilarbremotestore/metrics
+    path: /veilarbremotestore/internal/metrics
   vault:
     enabled: true
+  envFrom:
+    - configmap: pto-config
   env:
     - name: S3_URL
       value: objectstore.nais.preprod.local
@@ -47,3 +50,7 @@ spec:
       value: https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri
     - name: ISSO_ISSUER
       value: https://isso-q.adeo.no:443/isso/oauth2
+    - name: NAMESPACE
+      value: {{namespace}}
+    - name: AZUREAD_JWKS_URL
+      value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys

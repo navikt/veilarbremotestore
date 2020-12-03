@@ -4,16 +4,19 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.natpryce.konfig.Key
+import com.natpryce.konfig.stringType
 import io.ktor.features.BadRequestException
 import no.nav.pto.veilarbremotestore.Metrics.Companion.timed
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.pto.veilarbremotestore.model.VeilederObjekt
 import java.security.MessageDigest
 
-private const val VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
+private var VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
 
-class StorageService(private val s3: AmazonS3) : StorageProvider {
+class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvider {
     init {
+        VEILEDERREMOTESTORE_BUCKET_NAME =  "veilarbremotestore-bucket-$namespace"
         lagS3BucketsHvisNodvendig(VEILEDERREMOTESTORE_BUCKET_NAME)
     }
 

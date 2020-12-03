@@ -23,14 +23,14 @@ fun main() {
     val applicationState = ApplicationState()
     val applicationServer = createHttpServer(
             applicationState = applicationState,
-            provider = StorageService(s3),
+            provider = StorageService(s3, configuration.namespace),
             configuration = configuration
     )
 
     Runtime.getRuntime().addShutdownHook(Thread {
         log.info("Shutdown hook called, shutting down gracefully")
         applicationState.initialized = false
-        applicationServer.stop(5, 5, TimeUnit.SECONDS)
+        applicationServer.stop(5000, 5000)
     })
 
     applicationServer.start(wait = true)
