@@ -5,7 +5,6 @@ import no.nav.pto.veilarbremotestore.Configuration
 import no.nav.pto.veilarbremotestore.createHttpServer
 import no.nav.pto.veilarbremotestore.storage.StorageService
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
 
 private val log = LoggerFactory.getLogger("veilarbremotestore.LocalRun")
 
