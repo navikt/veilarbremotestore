@@ -4,8 +4,6 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.natpryce.konfig.Key
-import com.natpryce.konfig.stringType
 import io.ktor.features.BadRequestException
 import no.nav.pto.veilarbremotestore.Metrics.Companion.timed
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
@@ -25,12 +23,12 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
-                log.info("Hent veileder objekt...")
-                val hashedVeilederId = hashVeilederId(veilederId);
+                val hashedVeilederId = hashVeilederId(veilederId.toUpperCase());
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
                 log.warn("Hent veileder objekt error: " + e.message, e)
+                log.warn("For ident: $veilederId")
                 null
             }
         }
