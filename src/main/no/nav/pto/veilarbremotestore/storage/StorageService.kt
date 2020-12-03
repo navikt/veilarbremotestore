@@ -4,8 +4,6 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.natpryce.konfig.Key
-import com.natpryce.konfig.stringType
 import io.ktor.features.BadRequestException
 import no.nav.pto.veilarbremotestore.Metrics.Companion.timed
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
@@ -26,6 +24,7 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
         val res = timed("hent_VeilederObjekt") {
             try {
                 val hashedVeilederId = hashVeilederId(veilederId);
+                log.info(veilederId+" "+hashedVeilederId)
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
