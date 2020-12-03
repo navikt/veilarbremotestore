@@ -24,7 +24,6 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
         val res = timed("hent_VeilederObjekt") {
             try {
                 val hashedVeilederId = hashVeilederId(veilederId);
-                log.info(veilederId+" "+hashedVeilederId)
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
