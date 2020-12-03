@@ -2,7 +2,6 @@ package no.nav.pto.veilarbremotestore
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.JWT
 import com.auth0.jwt.impl.JWTParser
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
@@ -61,6 +60,7 @@ class JwtUtil {
         }
     }
 }
+
 
 class MockPayload(val staticSubject: String) : Payload {
     override fun getSubject(): String {

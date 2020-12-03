@@ -8,7 +8,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.jackson.JacksonConverter
 import io.ktor.metrics.dropwizard.DropwizardMetrics
-import io.ktor.request.path
 import io.ktor.routing.*
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
@@ -88,7 +87,6 @@ fun createHttpServer(
     }
 
     routing {
-        trace { application.log.trace(it.buildText()) }
         route("veilarbremotestore") {
             veilarbstoreRoutes(provider, useAuthentication)
             internalRoutes(provider, readinessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
