@@ -23,11 +23,12 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
-                val hashedVeilederId = hashVeilederId(veilederId);
+                val hashedVeilederId = hashVeilederId(veilederId.toUpperCase());
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
                 log.warn("Hent veileder objekt error: " + e.message, e)
+                log.warn("For ident: $veilederId")
                 null
             }
         }
