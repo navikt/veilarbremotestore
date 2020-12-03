@@ -29,7 +29,6 @@ spec:
   ingresses:
     - https://veilarbremotestore.nais.adeo.no
     - https://app.adeo.no/veilarbremotestore
-  webproxy: true
   replicas:
     min: 1
     max: 1

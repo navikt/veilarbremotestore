@@ -25,7 +25,6 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
-                log.info("Hent veileder objektm veilederId length: "+veilederId.length)
                 val hashedVeilederId = hashVeilederId(veilederId);
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
