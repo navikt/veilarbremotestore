@@ -4,12 +4,9 @@ import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.auth.*
 import io.ktor.request.receive
 import io.ktor.response.*
 import io.ktor.routing.*
-import no.nav.pto.veilarbremotestore.AuthCookies
-import no.nav.pto.veilarbremotestore.JwtUtil
 import no.nav.pto.veilarbremotestore.MockPayload
 import no.nav.pto.veilarbremotestore.storage.StorageProvider
 import org.slf4j.LoggerFactory
