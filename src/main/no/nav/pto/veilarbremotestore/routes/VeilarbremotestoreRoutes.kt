@@ -39,6 +39,7 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
                 ident?.let { navIdent ->
                     provider.hentVeilederObjekt(navIdent)
                             ?.let { veilederFelter ->
+                                log.info("Getting ressurs")
                                 val q = call.request.queryParameters
                                 q["ressurs"]
                                         ?.split(",")
@@ -104,22 +105,17 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             }
         }
     }
-    handle {
-        this.context.authentication.allErrors.forEach{ error->
-            log.info(error.message)
-        }
-    }
 }
 
 
 fun ApplicationCall.getNavident(): String? {
-    if (this.principal<JWTPrincipal>()?.payload != null &&
-            this.principal<JWTPrincipal>()?.payload?.claims != null &&
-            this.principal<JWTPrincipal>()?.payload?.claims?.containsKey("NAVident")!!) {
-        return this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")?.asString();
+    val navIdent = this.principal<JWTPrincipal>()?.payload?.getClaim("NAVident")
+
+    if (navIdent != null && !navIdent.isNull) {
+        return navIdent.asString()
     }
     return this.principal<JWTPrincipal>()
-            ?.payload
-            ?.subject
+        ?.payload
+        ?.subject
 }
 
