@@ -37,7 +37,6 @@ fun Route.veilarbstoreRoutes(provider: StorageProvider, useAuthentication: Boole
             get("") {
                 val ident = call.getNavident()
                 ident?.let { navIdent ->
-                    log.info("ressurs for:"+navIdent)
                     provider.hentVeilederObjekt(navIdent)
                             ?.let { veilederFelter ->
                                 val q = call.request.queryParameters
