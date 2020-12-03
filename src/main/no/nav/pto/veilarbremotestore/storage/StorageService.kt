@@ -10,11 +10,13 @@ import io.ktor.features.BadRequestException
 import no.nav.pto.veilarbremotestore.Metrics.Companion.timed
 import no.nav.pto.veilarbremotestore.ObjectMapperProvider.Companion.objectMapper
 import no.nav.pto.veilarbremotestore.model.VeilederObjekt
+import org.slf4j.LoggerFactory
 import java.security.MessageDigest
 
 private var VEILEDERREMOTESTORE_BUCKET_NAME = "veilarbremotestore-bucket"
 
 class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvider {
+    private val log = LoggerFactory.getLogger("veilarbremotestore.StorageService")
     init {
         VEILEDERREMOTESTORE_BUCKET_NAME =  "veilarbremotestore-bucket-$namespace"
         lagS3BucketsHvisNodvendig(VEILEDERREMOTESTORE_BUCKET_NAME)
@@ -23,10 +25,12 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     override fun hentVeilederObjekt(veilederId: String): VeilederObjekt? {
         val res = timed("hent_VeilederObjekt") {
             try {
+                log.info("Hent veileder objekt...")
                 val hashedVeilederId = hashVeilederId(veilederId);
                 val remoteStore = s3.getObject(VEILEDERREMOTESTORE_BUCKET_NAME, hashedVeilederId)
                 objectMapper.readValue<VeilederObjekt>(remoteStore.objectContent)
             } catch (e: Exception) {
+                log.warn("Hent veileder objekt error: " + e.message, e)
                 null
             }
         }
