@@ -29,6 +29,7 @@ spec:
   ingresses:
     - https://veilarbremotestore.nais.preprod.local
     - https://app-{{namespace}}.adeo.no/veilarbremotestore
+    - https://app-{{namespace}}.dev.adeo.no/veilarbremotestore
   webproxy: true
   replicas:
     min: 1
