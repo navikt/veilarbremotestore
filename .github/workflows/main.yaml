@@ -64,7 +64,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: nais-dev.yaml
-          VAR: version=${{ env.IMAGE_TAG }}, namespace=q1
+          VAR: version=${{ env.IMAGE_TAG }}
   deploy-prod:
     name: Deploy application to prod
     if: github.ref == 'refs/heads/master'
