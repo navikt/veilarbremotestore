@@ -86,6 +86,9 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     }
 
     private fun lagS3BucketsHvisNodvendig(vararg buckets: String) {
+        val bucketNames = buckets.joinToString(", ")
+        log.info("Navn på bucket fra config: ${bucketNames}")
+
         timed("lag_buckets_hvis_nodvendig") {
             val s3BucketNames = s3.listBuckets().map { it.name }
             val missingBuckets = buckets.filter { !s3BucketNames.contains(it) }
