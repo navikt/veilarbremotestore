@@ -86,22 +86,18 @@ class StorageService(private val s3: AmazonS3, namespace: String) : StorageProvi
     }
 
     private fun lagS3BucketsHvisNodvendig(vararg buckets: String) {
-        val bucketNames = buckets.joinToString(", ")
-        log.info("Navn på bucket fra config: ${bucketNames}")
+        log.info("Wanted Buckets: ${buckets.joinToString(", ")}")
 
-        timed("lag_buckets_hvis_nodvendig") {
-            val s3BucketNames = s3.listBuckets().map { it.name }
-            val missingBuckets = buckets.filter { !s3BucketNames.contains(it) }
+        val s3BucketNames = s3.listBuckets().map { it.name }
+        val missingBuckets = buckets.filter { !s3BucketNames.contains(it) }
 
-            println("Wanted Buckets: ${buckets.joinToString(", ")}")
-            println("Found Buckets: ${s3BucketNames.joinToString(", ")}")
-            println("Missing Buckets: ${missingBuckets.joinToString(", ")}")
+        log.info("Found Buckets: ${s3BucketNames.joinToString(", ")}")
+        log.info("Missing Buckets: ${missingBuckets.joinToString(", ")}")
 
-            missingBuckets
-                    .forEach {
-                        s3.createBucket(CreateBucketRequest(it).withCannedAcl(CannedAccessControlList.Private))
-                    }
-        }
+        missingBuckets
+            .forEach {
+                s3.createBucket(CreateBucketRequest(it).withCannedAcl(CannedAccessControlList.Private))
+            }
     }
 
     private fun hashVeilederId (veilederId: String):  String {
