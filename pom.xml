@@ -21,7 +21,7 @@
         <prometheus.version>0.4.0</prometheus.version>
         <logstash.version>5.1</logstash.version>
         <jacksonkotlin.version>2.9.7</jacksonkotlin.version>
-        <common.version>2.2020.10.13_14.48-80e4c2dc5856</common.version>
+        <common.version>2.2021.09.17_07.09-67428a6422cc</common.version>
         <main.class>io.ktor.server.netty.EngineMain</main.class>
     </properties>
 
