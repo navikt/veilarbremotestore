@@ -20,7 +20,7 @@
         <konfig.version>1.6.10.0</konfig.version>
         <prometheus.version>0.4.0</prometheus.version>
         <logstash.version>5.1</logstash.version>
-        <jacksonkotlin.version>2.9.7</jacksonkotlin.version>
+        <jacksonkotlin.version>2.13.0</jacksonkotlin.version>
         <common.version>2.2020.10.13_14.48-80e4c2dc5856</common.version>
         <main.class>io.ktor.server.netty.EngineMain</main.class>
     </properties>
