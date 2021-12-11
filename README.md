@@ -7,7 +7,6 @@ Bruker [dev-proxy](https://github.com/navikt/dev-proxy) for sikkerhetsoppsett. S
 ### Kjør backend uten sikkerhet
 1. Start `LocalRunNoSecurity.kt`
 
-
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan rettes mot:
 
