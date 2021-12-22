@@ -11,3 +11,4 @@ Bruker [dev-proxy](https://github.com/navikt/dev-proxy) for sikkerhetsoppsett. S
 Spørsmål knyttet til koden eller prosjektet kan rettes mot:
 
 -   Alexandra Back, alexandra.back@nav.no
+
