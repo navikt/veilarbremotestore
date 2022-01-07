@@ -15,11 +15,11 @@
         <kotlin.version>1.4.10</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <ktor.version>1.4.1</ktor.version>
-        <logback.version>1.2.1</logback.version>
+        <logback.version>1.2.7</logback.version>
         <vaultjdbc.version>1.3.1</vaultjdbc.version>
         <konfig.version>1.6.10.0</konfig.version>
         <prometheus.version>0.4.0</prometheus.version>
-        <logstash.version>5.1</logstash.version>
+        <logstash.version>5.2</logstash.version>
         <jacksonkotlin.version>2.9.7</jacksonkotlin.version>
         <common.version>2.2020.10.13_14.48-80e4c2dc5856</common.version>
         <main.class>io.ktor.server.netty.EngineMain</main.class>
